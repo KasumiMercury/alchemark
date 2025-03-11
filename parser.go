@@ -14,6 +14,10 @@ func DetectBlockType(input string) []token.Token {
 
 		for currentChar == '#' {
 			currentPos++
+
+			if currentPos >= len(input) {
+				return []token.Token{{Type: token.Paragraph}}
+			}
 			currentChar = input[currentPos]
 		}
 
@@ -31,6 +35,10 @@ func DetectBlockType(input string) []token.Token {
 			}
 
 			currentPos++
+
+			if currentPos >= len(input) {
+				return []token.Token{{Type: token.Paragraph}}
+			}
 			currentChar = input[currentPos]
 		}
 
@@ -46,6 +54,10 @@ func DetectBlockType(input string) []token.Token {
 			}
 
 			currentPos++
+
+			if currentPos >= len(input) {
+				return []token.Token{{Type: token.Paragraph}}
+			}
 			currentChar = input[currentPos]
 		}
 

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestDetectBlockType(t *testing.T) {
+func TestDetectBlockTypeSuccess(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
@@ -60,4 +60,34 @@ func TestDetectBlockType(t *testing.T) {
 		})
 	}
 
+}
+
+func TestDetectBlockTypeNoSpace(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input string
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want []token.Token
+	}{
+		{
+			name: "Heading no space",
+			args: args{input: "#Heading"},
+			want: []token.Token{{Type: token.Paragraph}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := DetectBlockType(tt.args.input); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DetectBlockType() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

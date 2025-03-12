@@ -4,48 +4,55 @@ import (
 	"github.com/KasumiMercury/alchemark/token"
 )
 
-func HeadingDetector(input string) []token.Token {
+func HeadingDetector(input string) token.Token {
 	level := 0
 	for _, char := range input {
 		if char == '#' && level < 6 {
 			level++
 		} else {
 			if char == ' ' {
-				return []token.Token{{Type: token.Heading}}
+				return token.NewHeadingBlock(input[level:], level)
 			} else {
-				return []token.Token{{Type: token.Paragraph}}
+				// TODO: check depth
+				return token.NewParagraphBlock(input, 0)
 			}
 		}
 	}
 
-	return []token.Token{{Type: token.Paragraph}}
+	// TODO: check depth
+	return token.NewParagraphBlock(input, 0)
 }
 
-func CodeBlockDetector(input string) []token.Token {
+func CodeBlockDetector(input string) token.Token {
 	if len(input) < 3 {
-		return []token.Token{{Type: token.Paragraph}}
+		// TODO: check depth
+		return token.NewParagraphBlock(input, 0)
 	}
 
 	if input[0:3] == "```" {
-		return []token.Token{{Type: token.CodeBlock}}
+		// TODO: lang, code
+		return token.NewCodeBlock("", "")
 	}
 
-	return []token.Token{{Type: token.Paragraph}}
+	// TODO: check depth
+	return token.NewParagraphBlock(input, 0)
 }
 
-func HorizontalDetector(input string) []token.Token {
+func HorizontalDetector(input string) token.Token {
 	if len(input) < 3 {
-		return []token.Token{{Type: token.Paragraph}}
+		// TODO: check depth
+		return token.NewParagraphBlock(input, 0)
 	}
 
 	if input[0:3] == "---" {
-		return []token.Token{{Type: token.Horizontal}}
+		return token.NewHorizontal()
 	}
 
-	return []token.Token{{Type: token.Paragraph}}
+	// TODO: check depth
+	return token.NewParagraphBlock(input, 0)
 }
 
-func DetectBlockType(input string) []token.Token {
+func DetectBlockType(input string) token.Token {
 	firstChar := input[0]
 
 	switch firstChar {
@@ -56,6 +63,6 @@ func DetectBlockType(input string) []token.Token {
 	case '-':
 		return HorizontalDetector(input)
 	default:
-		return []token.Token{{Type: token.Paragraph}}
+		return token.NewParagraphBlock(input, 0)
 	}
 }

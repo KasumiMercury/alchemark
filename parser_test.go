@@ -6,6 +6,77 @@ import (
 	"testing"
 )
 
+func TestCountIndent(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input string
+		want  int
+	}{
+		{
+			name:  "No indent",
+			input: "No indent",
+			want:  0,
+		},
+		{
+			name:  "4 spaces indent",
+			input: "    4 spaces indent",
+			want:  1,
+		},
+		{
+			name:  "8 spaces indent",
+			input: "        8 spaces indent",
+			want:  2,
+		},
+		{
+			name:  "1 tab indent",
+			input: "\t1 tab indent",
+			want:  1,
+		},
+		{
+			name:  "2 tabs indent",
+			input: "\t\t2 tabs indent",
+			want:  2,
+		},
+		{
+			name:  "1 tab 4 spaces indent",
+			input: "\t    1 tab 4 spaces indent",
+			want:  2,
+		},
+		{
+			name:  "4 spaces 1 tab indent",
+			input: "    \t4 spaces 1 tab indent",
+			want:  2,
+		},
+		{
+			name:  "1 tab 3 spaces indent",
+			input: "\t   1 tab 3 spaces indent",
+			want:  1,
+		},
+		{
+			name:  "3 spaces 1 tab indent",
+			input: "   \t3 spaces 1 tab indent",
+			want:  1,
+		},
+		{
+			name:  "indent sandwiched by spaces",
+			input: "  \t  mix 4 spaces and 1 tab",
+			want:  1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := countIndent(tt.input); got != tt.want {
+				t.Errorf("countIndent() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestDetectBlockTypeSuccess(t *testing.T) {
 	t.Parallel()
 

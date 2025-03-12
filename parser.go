@@ -11,7 +11,7 @@ func HeadingDetector(input string) token.Token {
 			level++
 		} else {
 			if char == ' ' {
-				return token.NewHeadingBlock(input[level:], level)
+				return token.NewHeadingBlock(input[level+1:], level)
 			} else {
 				// TODO: check depth
 				return token.NewParagraphBlock(input, 0)

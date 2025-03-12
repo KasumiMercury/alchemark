@@ -87,6 +87,10 @@ func BenchmarkDetectBlockType(b *testing.B) {
 			name:  "Horizontal by ---",
 			input: "---",
 		},
+		{
+			name:  "Paragraph",
+			input: "Paragraph",
+		},
 	}
 
 	for _, tt := range tests {

@@ -4,52 +4,46 @@ import (
 	"github.com/KasumiMercury/alchemark/token"
 )
 
-func HeadingDetector(input string) token.Token {
+func HeadingDetector(input string) (token.Token, bool) {
 	level := 0
 	for _, char := range input {
 		if char == '#' && level < 6 {
 			level++
 		} else {
 			if char == ' ' {
-				return token.NewHeadingBlock(input[level+1:], level)
+				return token.NewHeadingBlock(input[level+1:], level), true
 			} else {
-				// TODO: check depth
-				return token.NewParagraphBlock(input, 0)
+				return nil, false
 			}
 		}
 	}
 
-	// TODO: check depth
-	return token.NewParagraphBlock(input, 0)
+	return nil, false
 }
 
-func CodeBlockDetector(input string) token.Token {
+func CodeBlockDetector(input string) (token.Token, bool) {
 	if len(input) < 3 {
-		// TODO: check depth
-		return token.NewParagraphBlock(input, 0)
+		return nil, false
 	}
 
 	if input[0:3] == "```" {
 		// TODO: lang, code
-		return token.NewCodeBlock("", "")
+		return token.NewCodeBlock("", ""), true
 	}
 
-	// TODO: check depth
-	return token.NewParagraphBlock(input, 0)
+	return nil, false
 }
 
-func HorizontalDetector(input string) token.Token {
+func HorizontalDetector(input string) (token.Token, bool) {
 	if len(input) < 3 {
-		// TODO: check depth
-		return token.NewParagraphBlock(input, 0)
+		return nil, false
 	}
 
 	if input[0:3] == "---" {
-		return token.NewHorizontal()
+		return token.NewHorizontal(), true
 	}
 
-	// TODO: check depth
-	return token.NewParagraphBlock(input, 0)
+	return nil, false
 }
 
 func DetectBlockType(input string) token.Token {
@@ -57,12 +51,22 @@ func DetectBlockType(input string) token.Token {
 
 	switch firstChar {
 	case '#':
-		return HeadingDetector(input)
+		if tk, ok := HeadingDetector(input); ok {
+			return tk
+		}
 	case '`':
-		return CodeBlockDetector(input)
+		if tk, ok := CodeBlockDetector(input); ok {
+			return tk
+		}
 	case '-':
-		return HorizontalDetector(input)
+		if tk, ok := HorizontalDetector(input); ok {
+			return tk
+		}
 	default:
+		// TODO: check depth
 		return token.NewParagraphBlock(input, 0)
 	}
+
+	// TODO: check depth
+	return token.NewParagraphBlock(input, 0)
 }

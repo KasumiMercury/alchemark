@@ -62,6 +62,42 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 
 }
 
+func BenchmarkDetectBlockType(b *testing.B) {
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{
+			name:  "Heading",
+			input: "# Heading",
+		},
+		{
+			name:  "Heading2",
+			input: "## Heading",
+		},
+		{
+			name:  "CodeBlock",
+			input: "```",
+		},
+		{
+			name:  "CodeBlock with language",
+			input: "````go",
+		},
+		{
+			name:  "Horizontal by ---",
+			input: "---",
+		},
+	}
+
+	for _, tt := range tests {
+		b.Run(tt.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				DetectBlockType(tt.input)
+			}
+		})
+	}
+}
+
 func TestDetectBlockTypeNoSpace(t *testing.T) {
 	t.Parallel()
 

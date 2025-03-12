@@ -16,37 +16,37 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []token.Token
+		want token.Token
 	}{
 		{
 			name: "Heading",
 			args: args{input: "# Heading"},
-			want: []token.Token{{Type: token.Heading}},
+			want: token.NewHeadingBlock("Heading", 1),
 		},
 		{
 			name: "Heading2",
 			args: args{input: "## Heading"},
-			want: []token.Token{{Type: token.Heading}},
+			want: token.NewHeadingBlock("Heading", 2),
 		},
 		{
 			name: "CodeBlock",
 			args: args{input: "```"},
-			want: []token.Token{{Type: token.CodeBlock}},
+			want: token.NewCodeBlock("", ""),
 		},
 		{
 			name: "CodeBlock with language",
 			args: args{input: "````go"},
-			want: []token.Token{{Type: token.CodeBlock}},
+			want: token.NewCodeBlock("", ""),
 		},
 		{
 			name: "Horizontal by ---",
 			args: args{input: "---"},
-			want: []token.Token{{Type: token.Horizontal}},
+			want: token.NewHorizontal(),
 		},
 		{
 			name: "Paragraph",
 			args: args{input: "Paragraph"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("Paragraph", 0),
 		},
 	}
 
@@ -108,17 +108,17 @@ func TestDetectBlockTypeNoSpace(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []token.Token
+		want token.Token
 	}{
 		{
 			name: "Heading no space",
 			args: args{input: "#Heading"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("#Heading", 0),
 		},
 		{
 			name: "Heading2 no space",
 			args: args{input: "##Heading"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("##Heading", 0),
 		},
 	}
 
@@ -143,27 +143,27 @@ func TestDetectBlockTypeShortage(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []token.Token
+		want token.Token
 	}{
 		{
 			name: "CodeBlock shortage",
 			args: args{input: "`"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("`", 0),
 		},
 		{
 			name: "CodeBlock shortage2",
 			args: args{input: "``"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("``", 0),
 		},
 		{
 			name: "Horizontal shortage",
 			args: args{input: "-"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("-", 0),
 		},
 		{
 			name: "Horizontal shortage2",
 			args: args{input: "--"},
-			want: []token.Token{{Type: token.Paragraph}},
+			want: token.NewParagraphBlock("--", 0),
 		},
 	}
 

@@ -250,6 +250,26 @@ func TestDetectBlockTypeShortage(t *testing.T) {
 			args: args{input: "--"},
 			want: token.NewParagraphBlock("--", 0),
 		},
+		{
+			name: "Horizontal shortage3",
+			args: args{input: "**"},
+			want: token.NewParagraphBlock("**", 0),
+		},
+		{
+			name: "Horizontal shortage4",
+			args: args{input: "*"},
+			want: token.NewParagraphBlock("*", 0),
+		},
+		{
+			name: "Horizontal shortage5",
+			args: args{input: "__"},
+			want: token.NewParagraphBlock("__", 0),
+		},
+		{
+			name: "Horizontal shortage6",
+			args: args{input: "_"},
+			want: token.NewParagraphBlock("_", 0),
+		},
 	}
 
 	for _, tt := range tests {

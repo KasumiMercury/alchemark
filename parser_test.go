@@ -107,7 +107,7 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 		{
 			name: "CodeBlock with language",
 			args: args{input: "````go"},
-			want: token.NewCodeBlock("", ""),
+			want: token.NewCodeBlock("go", ""),
 		},
 		{
 			name: "Horizontal by ---",

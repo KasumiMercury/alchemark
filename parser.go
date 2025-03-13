@@ -28,8 +28,12 @@ func CodeBlockDetector(input []rune) (token.Token, bool) {
 
 	// TODO: runeのままで比較する方法を検討
 	if string(input[0:3]) == "```" {
-		// TODO: lang, code
-		return token.NewCodeBlock("", ""), true
+		// TODO: code
+		lang := ""
+		if len(input) > 3 {
+			lang = string(input[4:])
+		}
+		return token.NewCodeBlock(lang, ""), true
 	}
 
 	return nil, false
@@ -49,7 +53,7 @@ func HorizontalDetector(input []rune) (token.Token, bool) {
 			continue
 		}
 
-		if char == rune(hChar) {
+		if char == hChar {
 			hCharCount++
 		} else {
 			return nil, false

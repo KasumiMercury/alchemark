@@ -70,7 +70,7 @@ func TestCountIndent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			if got := countIndent(tt.input); got != tt.want {
+			if got := countIndent([]rune(tt.input)); got != tt.want {
 				t.Errorf("countIndent() = %v, want %v", got, tt.want)
 			}
 		})

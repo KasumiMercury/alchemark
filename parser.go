@@ -4,14 +4,14 @@ import (
 	"github.com/KasumiMercury/alchemark/token"
 )
 
-func HeadingDetector(input string) (token.Token, bool) {
+func HeadingDetector(input []rune) (token.Token, bool) {
 	level := 0
 	for _, char := range input {
 		if char == '#' && level < 6 {
 			level++
 		} else {
 			if char == ' ' {
-				return token.NewHeadingBlock(input[level+1:], level), true
+				return token.NewHeadingBlock(string(input[level+1:]), level), true
 			} else {
 				return nil, false
 			}
@@ -21,12 +21,13 @@ func HeadingDetector(input string) (token.Token, bool) {
 	return nil, false
 }
 
-func CodeBlockDetector(input string) (token.Token, bool) {
+func CodeBlockDetector(input []rune) (token.Token, bool) {
 	if len(input) < 3 {
 		return nil, false
 	}
 
-	if input[0:3] == "```" {
+	// TODO: runeのままで比較する方法を検討
+	if string(input[0:3]) == "```" {
 		// TODO: lang, code
 		return token.NewCodeBlock("", ""), true
 	}
@@ -34,7 +35,7 @@ func CodeBlockDetector(input string) (token.Token, bool) {
 	return nil, false
 }
 
-func HorizontalDetector(input string) (token.Token, bool) {
+func HorizontalDetector(input []rune) (token.Token, bool) {
 	if len(input) < 3 {
 		return nil, false
 	}
@@ -62,7 +63,7 @@ func HorizontalDetector(input string) (token.Token, bool) {
 	return token.NewHorizontal(), true
 }
 
-func countIndent(input string) int {
+func countIndent(input []rune) int {
 	indent := 0
 	spaceCount := 0
 
@@ -85,7 +86,9 @@ func countIndent(input string) int {
 	return indent
 }
 
-func DetectBlockType(input string) token.Token {
+func DetectBlockType(line string) token.Token {
+	input := []rune(line)
+
 	indent := countIndent(input)
 	input = input[indent:]
 
@@ -113,8 +116,8 @@ func DetectBlockType(input string) token.Token {
 			return tk
 		}
 	default:
-		return token.NewParagraphBlock(input, indent)
+		return token.NewParagraphBlock(line, indent)
 	}
 
-	return token.NewParagraphBlock(input, indent)
+	return token.NewParagraphBlock(line, indent)
 }

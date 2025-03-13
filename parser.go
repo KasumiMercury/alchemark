@@ -42,8 +42,12 @@ func (p *Parser) ParseToBlocks() []token.Token {
 		close(lineDataCh)
 	}()
 
-	var tokens []token.Token
+	tokens := make([]token.Token, 0, len(p.lines))
 	for data := range lineDataCh {
+		if data.token == nil {
+			continue
+		}
+
 		tokens = append(tokens, data.token)
 	}
 

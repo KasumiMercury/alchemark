@@ -95,6 +95,11 @@ func DetectBlockType(line string) token.Token {
 	indent := countIndent(input)
 	input = input[indent:]
 
+	if len(input) == 0 {
+		// TODO: empty line
+		return nil
+	}
+
 	firstChar := input[0]
 
 	switch firstChar {

@@ -115,6 +115,16 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			want: token.NewHorizontal(),
 		},
 		{
+			name: "Horizontal by ***",
+			args: args{input: "***"},
+			want: token.NewHorizontal(),
+		},
+		{
+			name: "Horizontal by ___",
+			args: args{input: "___"},
+			want: token.NewHorizontal(),
+		},
+		{
 			name: "Paragraph",
 			args: args{input: "Paragraph"},
 			want: token.NewParagraphBlock("Paragraph", 0),

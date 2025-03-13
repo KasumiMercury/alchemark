@@ -39,11 +39,11 @@ func HorizontalDetector(input string) (token.Token, bool) {
 		return nil, false
 	}
 
-	if input[0:3] == "---" {
-		return token.NewHorizontal(), true
+	if input[1] != input[0] || input[2] != input[0] {
+		return nil, false
 	}
 
-	return nil, false
+	return token.NewHorizontal(), true
 }
 
 func countIndent(input string) int {
@@ -85,6 +85,14 @@ func DetectBlockType(input string) token.Token {
 			return tk
 		}
 	case '-':
+		if tk, ok := HorizontalDetector(input); ok {
+			return tk
+		}
+	case '*':
+		if tk, ok := HorizontalDetector(input); ok {
+			return tk
+		}
+	case '_':
 		if tk, ok := HorizontalDetector(input); ok {
 			return tk
 		}

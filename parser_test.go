@@ -37,3 +37,35 @@ func TestParser_ParseToBlock(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkParser_ParseToBlock(b *testing.B) {
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{
+			name:  "case1",
+			input: "# Heading\nParagraph",
+		},
+		{
+			name:  "case2",
+			input: "# Heading\nParagraph\n# Heading2\nParagraph2",
+		},
+		{
+			name:  "case3",
+			input: "# Heading\n---\nParagraph",
+		},
+	}
+
+	for _, tt := range tests {
+		b.Run(tt.name, func(b *testing.B) {
+			b.ReportAllocs()
+			b.ResetTimer()
+
+			for i := 0; i < b.N; i++ {
+				p := NewParser(tt.input)
+				p.ParseToBlocks()
+			}
+		})
+	}
+}

@@ -26,8 +26,7 @@ func CodeBlockDetector(input []rune) (token.Token, bool) {
 		return nil, false
 	}
 
-	// TODO: runeのままで比較する方法を検討
-	if string(input[0:3]) == "```" {
+	if input[0] == '`' && input[1] == '`' && input[2] == '`' {
 		// TODO: code
 		lang := ""
 		if len(input) > 3 {

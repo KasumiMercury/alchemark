@@ -39,8 +39,24 @@ func HorizontalDetector(input string) (token.Token, bool) {
 		return nil, false
 	}
 
-	if input[1] != input[0] || input[2] != input[0] {
-		return nil, false
+	hChar := input[0]
+	hCharCount := 1
+
+	// first char is already checked
+	for _, char := range input[1:] {
+		if char != ' ' {
+			continue
+		}
+
+		if char == rune(hChar) {
+			hCharCount++
+		} else {
+			return nil, false
+		}
+
+		if hCharCount > 3 {
+			break
+		}
 	}
 
 	return token.NewHorizontal(), true

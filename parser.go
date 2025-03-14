@@ -52,7 +52,7 @@ func (p *Parser) ParseToBlocks() []token.Token {
 			continue
 		}
 
-		if data.token.Type() == "CodeBlockFence" {
+		if data.token.Type() == token.CodeBlockFenceType {
 			if openingCodeBlockFence == nil {
 				openingCodeBlockFence = data.token.(*token.CodeBlockFence)
 				continue

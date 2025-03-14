@@ -1,7 +1,17 @@
 package token
 
+const (
+	HeadingBlockType    = "Heading"
+	ParagraphBlockType  = "Paragraph"
+	CodeBlockType       = "CodeBlock"
+	CodeBlockFenceType  = "CodeBlockFence"
+	HorizontalBlockType = "Horizontal"
+)
+
+type BlockType string
+
 type Token interface {
-	Type() string
+	Type() BlockType
 }
 
 type HeadingBlock struct {
@@ -15,8 +25,8 @@ func NewHeadingBlock(inlineString string, level int) *HeadingBlock {
 		level:        level,
 	}
 }
-func (h HeadingBlock) Type() string {
-	return "Heading"
+func (h HeadingBlock) Type() BlockType {
+	return HeadingBlockType
 }
 func (h HeadingBlock) InlineString() string {
 	return h.inlineString
@@ -36,8 +46,8 @@ func NewParagraphBlock(inlineString string, depth int) *ParagraphBlock {
 		depth:        depth,
 	}
 }
-func (p ParagraphBlock) Type() string {
-	return "Paragraph"
+func (p ParagraphBlock) Type() BlockType {
+	return ParagraphBlockType
 }
 func (p ParagraphBlock) InlineString() string {
 	return p.inlineString
@@ -58,8 +68,8 @@ func NewCodeBlock(infoString string, codeLines []string) *CodeBlock {
 	}
 }
 
-func (c CodeBlock) Type() string {
-	return "CodeBlock"
+func (c CodeBlock) Type() BlockType {
+	return CodeBlockType
 }
 func (c CodeBlock) InfoString() string {
 	return c.infoString
@@ -79,8 +89,8 @@ func NewCodeBlockFence(fenceChar rune, infoString string) *CodeBlockFence {
 		infoString: infoString,
 	}
 }
-func (c CodeBlockFence) Type() string {
-	return "CodeBlockFence"
+func (c CodeBlockFence) Type() BlockType {
+	return CodeBlockFenceType
 }
 func (c CodeBlockFence) FenceChar() rune {
 	return c.fenceChar
@@ -94,6 +104,6 @@ type Horizontal struct{}
 func NewHorizontal() Horizontal {
 	return Horizontal{}
 }
-func (h Horizontal) Type() string {
-	return "Horizontal"
+func (h Horizontal) Type() BlockType {
+	return HorizontalBlockType
 }

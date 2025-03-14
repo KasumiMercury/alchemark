@@ -47,24 +47,46 @@ func (p ParagraphBlock) Depth() int {
 }
 
 type CodeBlock struct {
-	lang string
-	code string
+	infoString string
+	codeLines  []string
 }
 
-func NewCodeBlock(lang string, code string) *CodeBlock {
+func NewCodeBlock(infoString string, codeLines []string) *CodeBlock {
 	return &CodeBlock{
-		lang: lang,
-		code: code,
+		infoString: infoString,
+		codeLines:  codeLines,
 	}
 }
+
 func (c CodeBlock) Type() string {
 	return "CodeBlock"
 }
-func (c CodeBlock) Lang() string {
-	return c.lang
+func (c CodeBlock) InfoString() string {
+	return c.infoString
 }
-func (c CodeBlock) Code() string {
-	return c.code
+func (c CodeBlock) CodeLines() []string {
+	return c.codeLines
+}
+
+type CodeBlockFence struct {
+	fenceChar  rune
+	infoString string
+}
+
+func NewCodeBlockFence(fenceChar rune, infoString string) *CodeBlockFence {
+	return &CodeBlockFence{
+		fenceChar:  fenceChar,
+		infoString: infoString,
+	}
+}
+func (c CodeBlockFence) Type() string {
+	return "CodeBlockFence"
+}
+func (c CodeBlockFence) FenceChar() rune {
+	return c.fenceChar
+}
+func (c CodeBlockFence) InfoString() string {
+	return c.infoString
 }
 
 type Horizontal struct{}

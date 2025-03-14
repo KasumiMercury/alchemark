@@ -24,6 +24,12 @@ func TestParser_ParseToBlock(t *testing.T) {
 				token.NewParagraphBlock("Paragraph", 0),
 			},
 		},
+		{
+			input: "```\nCodeBlock\n```",
+			want: []token.Token{
+				token.NewCodeBlock("", []string{"CodeBlock"}),
+			},
+		},
 	}
 
 	for _, tt := range tests {

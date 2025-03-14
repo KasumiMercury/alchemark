@@ -27,12 +27,12 @@ func CodeBlockDetector(input []rune) (token.Token, bool) {
 	}
 
 	if input[0] == '`' && input[1] == '`' && input[2] == '`' {
-		// TODO: code
-		lang := ""
+		// TODO: infoStringのスペース取り扱い
+		infoString := ""
 		if len(input) > 3 {
-			lang = string(input[4:])
+			infoString = string(input[4:])
 		}
-		return token.NewCodeBlock(lang, ""), true
+		return token.NewCodeBlockFence(input[0], infoString), true
 	}
 
 	return nil, false

@@ -43,8 +43,32 @@ func (p *Parser) ParseToBlocks() []token.Token {
 	}()
 
 	tokens := make([]token.Token, 0, len(p.lines))
+
+	var openingCodeBlockFence *token.CodeBlockFence
+	codeBuffer := make([]string, 0)
+
 	for data := range lineDataCh {
 		if data.token == nil {
+			continue
+		}
+
+		if data.token.Type() == "CodeBlockFence" {
+			if openingCodeBlockFence == nil {
+				openingCodeBlockFence = data.token.(*token.CodeBlockFence)
+				continue
+			}
+
+			fenceToken := data.token.(*token.CodeBlockFence)
+			if fenceToken.InfoString() == "" && fenceToken.FenceChar() == openingCodeBlockFence.FenceChar() {
+				tokens = append(tokens, token.NewCodeBlock(openingCodeBlockFence.InfoString(), codeBuffer))
+				openingCodeBlockFence = nil
+				codeBuffer = codeBuffer[:0]
+				continue
+			}
+		}
+
+		if openingCodeBlockFence != nil {
+			codeBuffer = append(codeBuffer, p.lines[data.index])
 			continue
 		}
 

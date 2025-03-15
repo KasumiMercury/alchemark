@@ -58,7 +58,7 @@ func HorizontalDetector(input []rune) (token.Token, bool) {
 			return nil, false
 		}
 
-		if hCharCount > 3 {
+		if hCharCount > 2 {
 			break
 		}
 	}
@@ -111,6 +111,7 @@ func DetectBlockType(line string) token.Token {
 			return tk
 		}
 	case '-':
+		// TODO: setext heading
 		if tk, ok := HorizontalDetector(input); ok {
 			return tk
 		}

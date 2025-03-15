@@ -6,6 +6,7 @@ const (
 	CodeBlockType       = "CodeBlock"
 	CodeBlockFenceType  = "CodeBlockFence"
 	HorizontalBlockType = "Horizontal"
+	EmptyBlockType      = "Empty"
 )
 
 type BlockType string
@@ -106,4 +107,13 @@ func NewHorizontal() Horizontal {
 }
 func (h Horizontal) Type() BlockType {
 	return HorizontalBlockType
+}
+
+type Empty struct{}
+
+func NewEmpty() Empty {
+	return Empty{}
+}
+func (e Empty) Type() BlockType {
+	return EmptyBlockType
 }

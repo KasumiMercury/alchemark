@@ -8,7 +8,13 @@ const (
 	CodeBlockType       = "CodeBlock"
 	CodeBlockFenceType  = "CodeBlockFence"
 	HorizontalBlockType = "Horizontal"
+	SetextBlockType     = "SetextHeading"
 	EmptyBlockType      = "Empty"
+
+	// HyphenBlockType hyphen can be used for horizontal line or setext heading
+	HyphenBlockType = "HyphenToken"
+	// EqualBlockType equal can be used for setext heading
+	EqualBlockType = "EqualToken"
 )
 
 type BlockType string
@@ -125,6 +131,73 @@ func (h Horizontal) Type() BlockType {
 }
 func (h Horizontal) String() string {
 	return fmt.Sprintf("Type: %s", HorizontalBlockType)
+}
+
+type SetextHeading struct{}
+
+func NewSetextHeading() SetextHeading {
+	return SetextHeading{}
+}
+func (s SetextHeading) Type() BlockType {
+	return SetextBlockType
+}
+func (s SetextHeading) String() string {
+	return fmt.Sprintf("Type: %s", SetextBlockType)
+}
+
+type HyphenToken struct {
+	canHorizontal bool
+	self          []rune
+}
+
+func NewHyphen(canHorizontal bool, self []rune) HyphenToken {
+	return HyphenToken{
+		canHorizontal: canHorizontal,
+		self:          self,
+	}
+}
+func (h HyphenToken) Type() BlockType {
+	return HyphenBlockType
+}
+func (h HyphenToken) CanHorizontal() bool {
+	return h.canHorizontal
+}
+func (h HyphenToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken) {
+	if target.Type() == ParagraphBlockType {
+		return NewHeadingBlock(target.(ParagraphBlock).InlineString(), 2), NewSetextHeading()
+	}
+
+	if h.canHorizontal {
+		return NewEmpty(), NewHorizontal()
+	} else {
+		return NewEmpty(), NewParagraphBlock(string(h.self), 0)
+	}
+}
+func (h HyphenToken) String() string {
+	return fmt.Sprintf("Type: %s, CanHorizontal: %t", HyphenBlockType, h.canHorizontal)
+}
+
+type EqualToken struct {
+	self []rune
+}
+
+func NewEqual(self []rune) EqualToken {
+	return EqualToken{
+		self: self,
+	}
+}
+func (e EqualToken) Type() BlockType {
+	return EqualBlockType
+}
+func (e EqualToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken) {
+	if target.Type() == ParagraphBlockType {
+		return NewHeadingBlock(target.(ParagraphBlock).InlineString(), 1), NewSetextHeading()
+	}
+
+	return NewEmpty(), NewParagraphBlock(string(e.self), 0)
+}
+func (e EqualToken) String() string {
+	return fmt.Sprintf("Type: %s", EqualBlockType)
 }
 
 type Empty struct{}

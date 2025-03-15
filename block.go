@@ -110,11 +110,6 @@ func DetectBlockType(line string) token.BlockToken {
 		if tk, ok := CodeBlockDetector(input); ok {
 			return tk
 		}
-	case '-':
-		// TODO: setext heading
-		if tk, ok := HorizontalDetector(input); ok {
-			return tk
-		}
 	case '*':
 		if tk, ok := HorizontalDetector(input); ok {
 			return tk

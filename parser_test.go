@@ -11,24 +11,24 @@ func TestParser_ParseToBlock(t *testing.T) {
 
 	tests := []struct {
 		input string
-		want  []token.Token
+		want  []token.BlockToken
 	}{
 		{
 			input: "",
-			want: []token.Token{
+			want: []token.BlockToken{
 				token.NewEmpty(),
 			},
 		},
 		{
 			input: "# Heading\nParagraph",
-			want: []token.Token{
+			want: []token.BlockToken{
 				token.NewHeadingBlock("Heading", 1),
 				token.NewParagraphBlock("Paragraph", 0),
 			},
 		},
 		{
 			input: "```\nCodeBlock\n```",
-			want: []token.Token{
+			want: []token.BlockToken{
 				token.NewCodeBlock("", []string{"CodeBlock"}),
 			},
 		},

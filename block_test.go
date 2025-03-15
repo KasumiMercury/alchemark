@@ -87,7 +87,7 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want token.Token
+		want token.BlockToken
 	}{
 		{
 			name: "Heading",
@@ -193,7 +193,7 @@ func TestDetectBlockTypeNoSpace(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want token.Token
+		want token.BlockToken
 	}{
 		{
 			name: "Heading no space",
@@ -228,7 +228,7 @@ func TestDetectBlockTypeShortage(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want token.Token
+		want token.BlockToken
 	}{
 		{
 			name: "CodeBlock shortage",

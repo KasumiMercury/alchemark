@@ -13,7 +13,7 @@ const (
 
 type BlockType string
 
-type Token interface {
+type BlockToken interface {
 	Type() BlockType
 	String() string
 }

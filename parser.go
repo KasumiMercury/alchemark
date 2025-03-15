@@ -16,14 +16,14 @@ func NewParser(text string) *Parser {
 	}
 }
 
-func (p *Parser) ParseToBlocks() []token.Token {
+func (p *Parser) ParseToBlocks() []token.BlockToken {
 	if len(p.lines) == 0 {
 		return nil
 	}
 
 	type lineData struct {
 		index int
-		token token.Token
+		token token.BlockToken
 	}
 
 	lineDataCh := make(chan lineData, len(p.lines))
@@ -42,7 +42,7 @@ func (p *Parser) ParseToBlocks() []token.Token {
 		close(lineDataCh)
 	}()
 
-	tokens := make([]token.Token, 0, len(p.lines))
+	tokens := make([]token.BlockToken, 0, len(p.lines))
 
 	var openingCodeBlockFence *token.CodeBlockFence
 	codeBuffer := make([]string, 0)

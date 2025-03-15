@@ -4,7 +4,7 @@ import (
 	"github.com/KasumiMercury/alchemark/token"
 )
 
-func HeadingDetector(input []rune) (token.Token, bool) {
+func HeadingDetector(input []rune) (token.BlockToken, bool) {
 	level := 0
 	for _, char := range input {
 		if char == '#' && level < 6 {
@@ -21,7 +21,7 @@ func HeadingDetector(input []rune) (token.Token, bool) {
 	return nil, false
 }
 
-func CodeBlockDetector(input []rune) (token.Token, bool) {
+func CodeBlockDetector(input []rune) (token.BlockToken, bool) {
 	if len(input) < 3 {
 		return nil, false
 	}
@@ -38,7 +38,7 @@ func CodeBlockDetector(input []rune) (token.Token, bool) {
 	return nil, false
 }
 
-func HorizontalDetector(input []rune) (token.Token, bool) {
+func HorizontalDetector(input []rune) (token.BlockToken, bool) {
 	if len(input) < 3 {
 		return nil, false
 	}
@@ -89,7 +89,7 @@ func countIndent(input []rune) int {
 	return indent
 }
 
-func DetectBlockType(line string) token.Token {
+func DetectBlockType(line string) token.BlockToken {
 	input := []rune(line)
 
 	indent := countIndent(input)

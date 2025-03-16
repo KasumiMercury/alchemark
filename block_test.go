@@ -110,11 +110,6 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			want: token.NewCodeBlockFence('`', "go"),
 		},
 		{
-			name: "Horizontal by ---",
-			args: args{input: "---"},
-			want: token.NewHorizontal(),
-		},
-		{
 			name: "Horizontal by ***",
 			args: args{input: "***"},
 			want: token.NewHorizontal(),
@@ -128,6 +123,11 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			name: "Paragraph",
 			args: args{input: "Paragraph"},
 			want: token.NewParagraphBlock("Paragraph", 0),
+		},
+		{
+			name: "Horizontal by ---",
+			args: args{input: "---"},
+			want: token.NewHyphen(true, []rune{'-', '-', '-'}),
 		},
 	}
 
@@ -241,16 +241,6 @@ func TestDetectBlockTypeShortage(t *testing.T) {
 			want: token.NewParagraphBlock("``", 0),
 		},
 		{
-			name: "Horizontal shortage",
-			args: args{input: "-"},
-			want: token.NewParagraphBlock("-", 0),
-		},
-		{
-			name: "Horizontal shortage2",
-			args: args{input: "--"},
-			want: token.NewParagraphBlock("--", 0),
-		},
-		{
 			name: "Horizontal shortage3",
 			args: args{input: "**"},
 			want: token.NewParagraphBlock("**", 0),
@@ -269,6 +259,16 @@ func TestDetectBlockTypeShortage(t *testing.T) {
 			name: "Horizontal shortage6",
 			args: args{input: "_"},
 			want: token.NewParagraphBlock("_", 0),
+		},
+		{
+			name: "Horizontal shortage",
+			args: args{input: "-"},
+			want: token.NewHyphen(false, []rune{'-'}),
+		},
+		{
+			name: "Horizontal shortage2",
+			args: args{input: "--"},
+			want: token.NewHyphen(false, []rune{'-', '-'}),
 		},
 	}
 

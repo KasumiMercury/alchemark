@@ -116,6 +116,9 @@ func DetectBlockType(line string) token.BlockToken {
 		if tk, ok := HeadingDetector(input); ok {
 			return tk
 		}
+	case '-':
+		_, ok := HorizontalDetector(input)
+		return token.NewHyphen(ok, input)
 	case '`':
 		if tk, ok := CodeBlockDetector(input); ok {
 			return tk

@@ -107,7 +107,7 @@ func (i IndentedBlock) ConvertBlockToIndentedCodeBlock(aboveType BlockType) Bloc
 	return NewIndentedCodeBlock(i.depth, i.self)
 }
 func (i IndentedBlock) String() string {
-	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", IndentedBlockType, i.depth, i.self)
+	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", IndentedBlockType, i.depth, string(i.self))
 }
 
 type IndentedCodeBlock struct {
@@ -131,7 +131,7 @@ func (i IndentedCodeBlock) InlineString() string {
 	return string(i.self)
 }
 func (i IndentedCodeBlock) String() string {
-	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", IndentedCodeBlockType, i.depth, i.self)
+	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", IndentedCodeBlockType, i.depth, string(i.self))
 }
 
 type CodeBlock struct {

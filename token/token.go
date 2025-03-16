@@ -6,6 +6,10 @@ const (
 	HeadingBlockType   = "Heading"
 	ParagraphBlockType = "Paragraph"
 
+	// IndentedBlockType indented block can be used for a nested list, nested paragraph or IndentedCodeBlock
+	IndentedBlockType     = "Indented"
+	IndentedCodeBlockType = "IndentedCodeBlock"
+
 	CodeBlockType      = "CodeBlock"
 	CodeBlockFenceType = "CodeBlockFence"
 
@@ -73,6 +77,61 @@ func (p ParagraphBlock) InlineString() string {
 }
 func (p ParagraphBlock) String() string {
 	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", ParagraphBlockType, p.depth, p.inlineString)
+}
+
+type IndentedBlock struct {
+	depth int
+	self  []rune
+}
+
+func NewIndentedBlock(level int, self []rune) *IndentedBlock {
+	return &IndentedBlock{
+		depth: level,
+		self:  self,
+	}
+}
+func (i IndentedBlock) Type() BlockType {
+	return IndentedBlockType
+}
+func (i IndentedBlock) Depth() int {
+	return i.depth
+}
+func (i IndentedBlock) InlineString() string {
+	return string(i.self)
+}
+func (i IndentedBlock) ConvertBlockToIndentedCodeBlock(aboveType BlockType) BlockToken {
+	if aboveType == ParagraphBlockType {
+		return NewParagraphBlock(string(i.self), i.depth)
+	}
+
+	return NewIndentedCodeBlock(i.depth, i.self)
+}
+func (i IndentedBlock) String() string {
+	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", IndentedBlockType, i.depth, i.self)
+}
+
+type IndentedCodeBlock struct {
+	depth int
+	self  []rune
+}
+
+func NewIndentedCodeBlock(level int, self []rune) *IndentedCodeBlock {
+	return &IndentedCodeBlock{
+		depth: level,
+		self:  self,
+	}
+}
+func (i IndentedCodeBlock) Type() BlockType {
+	return IndentedCodeBlockType
+}
+func (i IndentedCodeBlock) Depth() int {
+	return i.depth
+}
+func (i IndentedCodeBlock) InlineString() string {
+	return string(i.self)
+}
+func (i IndentedCodeBlock) String() string {
+	return fmt.Sprintf("Type: %s, Depth: %d, InlineString: %s", IndentedCodeBlockType, i.depth, i.self)
 }
 
 type CodeBlock struct {

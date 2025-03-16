@@ -101,6 +101,14 @@ func DetectBlockType(line string) token.BlockToken {
 
 	firstChar := input[0]
 
+	if indent > 0 {
+		switch firstChar {
+		case '-':
+		// TODO: nested list
+		default:
+			return token.NewIndentedBlock(indent, input)
+		}
+	}
 	// TODO: インデントの取り扱いを修正
 
 	switch firstChar {

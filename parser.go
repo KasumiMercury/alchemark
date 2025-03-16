@@ -78,6 +78,11 @@ func (p *Parser) ParseToBlocks() []token.BlockToken {
 			}
 		}
 
+		if block.token.Type() == token.IndentedBlockType {
+			self := block.token.(token.IndentedBlock).ConvertBlockToIndentedCodeBlock(blocks[i-1].token.Type())
+			tokens[len(tokens)-1] = self
+		}
+
 		if sht, ok := block.token.(token.SetextHeadingToken); ok {
 			target, self := sht.ConvertBlockToSetextHeading(blocks[i-1].token)
 			tokens[len(tokens)-1] = target

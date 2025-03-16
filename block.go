@@ -109,7 +109,6 @@ func DetectBlockType(line string) token.BlockToken {
 			return token.NewIndentedBlock(indent, input)
 		}
 	}
-	// TODO: インデントの取り扱いを修正
 
 	switch firstChar {
 	case '#':

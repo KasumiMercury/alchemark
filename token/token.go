@@ -3,18 +3,21 @@ package token
 import "fmt"
 
 const (
-	HeadingBlockType    = "Heading"
-	ParagraphBlockType  = "Paragraph"
-	CodeBlockType       = "CodeBlock"
-	CodeBlockFenceType  = "CodeBlockFence"
-	HorizontalBlockType = "Horizontal"
-	SetextBlockType     = "SetextHeading"
-	EmptyBlockType      = "Empty"
+	HeadingBlockType   = "Heading"
+	ParagraphBlockType = "Paragraph"
+
+	CodeBlockType      = "CodeBlock"
+	CodeBlockFenceType = "CodeBlockFence"
 
 	// HyphenBlockType hyphen can be used for horizontal line or setext heading
 	HyphenBlockType = "HyphenToken"
 	// EqualBlockType equal can be used for setext heading
 	EqualBlockType = "EqualToken"
+
+	HorizontalBlockType = "Horizontal"
+	SetextBlockType     = "SetextHeading"
+
+	EmptyBlockType = "Empty"
 )
 
 type BlockType string
@@ -121,30 +124,6 @@ func (c CodeBlockFence) String() string {
 	return fmt.Sprintf("Type: %s, FenceChar: %c, InfoString: %s", CodeBlockFenceType, c.fenceChar, c.infoString)
 }
 
-type Horizontal struct{}
-
-func NewHorizontal() Horizontal {
-	return Horizontal{}
-}
-func (h Horizontal) Type() BlockType {
-	return HorizontalBlockType
-}
-func (h Horizontal) String() string {
-	return fmt.Sprintf("Type: %s", HorizontalBlockType)
-}
-
-type SetextHeading struct{}
-
-func NewSetextHeading() SetextHeading {
-	return SetextHeading{}
-}
-func (s SetextHeading) Type() BlockType {
-	return SetextBlockType
-}
-func (s SetextHeading) String() string {
-	return fmt.Sprintf("Type: %s", SetextBlockType)
-}
-
 type HyphenToken struct {
 	canHorizontal bool
 	self          []rune
@@ -198,6 +177,30 @@ func (e EqualToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, 
 }
 func (e EqualToken) String() string {
 	return fmt.Sprintf("Type: %s", EqualBlockType)
+}
+
+type Horizontal struct{}
+
+func NewHorizontal() Horizontal {
+	return Horizontal{}
+}
+func (h Horizontal) Type() BlockType {
+	return HorizontalBlockType
+}
+func (h Horizontal) String() string {
+	return fmt.Sprintf("Type: %s", HorizontalBlockType)
+}
+
+type SetextHeading struct{}
+
+func NewSetextHeading() SetextHeading {
+	return SetextHeading{}
+}
+func (s SetextHeading) Type() BlockType {
+	return SetextBlockType
+}
+func (s SetextHeading) String() string {
+	return fmt.Sprintf("Type: %s", SetextBlockType)
 }
 
 type Empty struct{}

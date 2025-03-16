@@ -101,6 +101,8 @@ func DetectBlockType(line string) token.BlockToken {
 
 	firstChar := input[0]
 
+	// TODO: インデントの取り扱いを修正
+
 	switch firstChar {
 	case '#':
 		if tk, ok := HeadingDetector(input); ok {

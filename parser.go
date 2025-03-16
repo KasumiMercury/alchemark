@@ -62,7 +62,7 @@ func (p *Parser) ParseToBlocks() []token.BlockToken {
 	var openingCodeBlockFence *token.CodeBlockFence
 	codeBuffer := make([]string, 0)
 
-	for _, block := range blocks {
+	for i, block := range blocks {
 		if block.token.Type() == token.CodeBlockFenceType {
 			if openingCodeBlockFence == nil {
 				openingCodeBlockFence = block.token.(*token.CodeBlockFence)
@@ -76,6 +76,12 @@ func (p *Parser) ParseToBlocks() []token.BlockToken {
 				codeBuffer = codeBuffer[:0]
 				continue
 			}
+		}
+
+		if sht, ok := block.token.(token.SetextHeadingToken); ok {
+			target, self := sht.ConvertBlockToSetextHeading(blocks[i-1].token)
+			tokens[len(tokens)-1] = target
+			tokens = append(tokens, self)
 		}
 
 		if openingCodeBlockFence != nil {

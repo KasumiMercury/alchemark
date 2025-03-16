@@ -31,6 +31,11 @@ type BlockToken interface {
 	String() string
 }
 
+type SetextHeadingToken interface {
+	BlockToken
+	ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken)
+}
+
 type HeadingBlock struct {
 	level        int
 	inlineString string

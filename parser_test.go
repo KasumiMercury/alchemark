@@ -32,6 +32,46 @@ func TestParser_ParseToBlock(t *testing.T) {
 				token.NewCodeBlock("", []string{"CodeBlock"}),
 			},
 		},
+		{
+			input: "Heading\n=\nParagraph",
+			want: []token.BlockToken{
+				token.NewHeadingBlock("Heading", 1),
+				token.NewSetextHeading(),
+				token.NewParagraphBlock("Paragraph", 0),
+			},
+		},
+		{
+			input: "Heading\n-\nParagraph",
+			want: []token.BlockToken{
+				token.NewHeadingBlock("Heading", 2),
+				token.NewSetextHeading(),
+				token.NewParagraphBlock("Paragraph", 0),
+			},
+		},
+		{
+			input: "# Heading\n=\nParagraph",
+			want: []token.BlockToken{
+				token.NewHeadingBlock("Heading", 1),
+				token.NewParagraphBlock("=", 0),
+				token.NewParagraphBlock("Paragraph", 0),
+			},
+		},
+		{
+			input: "# Heading\n---\nParagraph",
+			want: []token.BlockToken{
+				token.NewHeadingBlock("Heading", 1),
+				token.NewHorizontal(),
+				token.NewParagraphBlock("Paragraph", 0),
+			},
+		},
+		{
+			input: "# Heading\n--\nParagraph",
+			want: []token.BlockToken{
+				token.NewHeadingBlock("Heading", 1),
+				token.NewParagraphBlock("--", 0),
+				token.NewParagraphBlock("Paragraph", 0),
+			},
+		},
 	}
 
 	for _, tt := range tests {

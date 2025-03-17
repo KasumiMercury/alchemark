@@ -87,6 +87,7 @@ func (p *Parser) ParseToBlocks() []token.BlockToken {
 			target, self := sht.ConvertBlockToSetextHeading(blocks[i-1].token)
 			tokens[len(tokens)-1] = target
 			tokens = append(tokens, self)
+			continue
 		}
 
 		if openingCodeBlockFence != nil {

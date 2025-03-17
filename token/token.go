@@ -207,13 +207,13 @@ func (h HyphenToken) CanHorizontal() bool {
 }
 func (h HyphenToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken) {
 	if target.Type() == ParagraphBlockType {
-		return NewHeadingBlock(target.(ParagraphBlock).InlineString(), 2), NewSetextHeading()
+		return NewHeadingBlock(target.(*ParagraphBlock).InlineString(), 2), NewSetextHeading()
 	}
 
 	if h.canHorizontal {
-		return NewEmpty(), NewHorizontal()
+		return target, NewHorizontal()
 	} else {
-		return NewEmpty(), NewParagraphBlock(string(h.self), 0)
+		return target, NewParagraphBlock(string(h.self), 0)
 	}
 }
 func (h HyphenToken) String() string {
@@ -234,10 +234,10 @@ func (e EqualToken) Type() BlockType {
 }
 func (e EqualToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken) {
 	if target.Type() == ParagraphBlockType {
-		return NewHeadingBlock(target.(ParagraphBlock).InlineString(), 1), NewSetextHeading()
+		return NewHeadingBlock(target.(*ParagraphBlock).InlineString(), 1), NewSetextHeading()
 	}
 
-	return NewEmpty(), NewParagraphBlock(string(e.self), 0)
+	return target, NewParagraphBlock(string(e.self), 0)
 }
 func (e EqualToken) String() string {
 	return fmt.Sprintf("Type: %s", EqualBlockType)

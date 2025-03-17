@@ -21,7 +21,7 @@ const (
 	HorizontalBlockType = "Horizontal"
 	SetextBlockType     = "SetextHeading"
 
-	EmptyBlockType = "Empty"
+	BlankBlockType = "Blank"
 )
 
 type BlockType string
@@ -273,14 +273,14 @@ func (s SetextHeading) String() string {
 	return fmt.Sprintf("Type: %s", SetextBlockType)
 }
 
-type Empty struct{}
+type Blank struct{}
 
-func NewEmpty() Empty {
-	return Empty{}
+func NewBlank() Blank {
+	return Blank{}
 }
-func (e Empty) Type() BlockType {
-	return EmptyBlockType
+func (b Blank) Type() BlockType {
+	return BlankBlockType
 }
-func (e Empty) String() string {
-	return fmt.Sprintf("Type: %s", EmptyBlockType)
+func (b Blank) String() string {
+	return fmt.Sprintf("Type: %s", BlankBlockType)
 }

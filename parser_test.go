@@ -16,7 +16,7 @@ func TestParser_ParseToBlock(t *testing.T) {
 		{
 			input: "",
 			want: []token.BlockToken{
-				token.NewEmpty(),
+				token.NewBlank(),
 			},
 		},
 		{

@@ -96,7 +96,7 @@ func DetectBlockType(line string) token.BlockToken {
 	input = input[indent:]
 
 	if len(input) == 0 {
-		return token.NewEmpty()
+		return token.NewBlank()
 	}
 
 	firstChar := input[0]

@@ -42,6 +42,12 @@ type HeadingBlock struct {
 }
 
 func NewHeadingBlock(inlineString string, level int) *HeadingBlock {
+	if level < 1 {
+		panic("heading level must be greater than 0")
+	} else if level > 6 {
+		panic("heading level must be less than 6")
+	}
+
 	return &HeadingBlock{
 		level:        level,
 		inlineString: inlineString,

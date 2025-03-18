@@ -77,6 +77,289 @@ func TestCountIndent(t *testing.T) {
 	}
 }
 
+func TestHeadingDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input string
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Heading",
+			args: args{
+				input: "# Heading",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 1),
+				true,
+			},
+		},
+		{
+			name: "Heading2",
+			args: args{
+				input: "## Heading",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 2),
+				true,
+			},
+		},
+		{
+			name: "Heading6",
+			args: args{
+				input: "###### Heading",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 6),
+				true,
+			},
+		},
+		{
+			name: "Heading7 will be not Heading",
+			args: args{
+				input: "####### Heading",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "Heading no space will be not Heading",
+			args: args{
+				input: "#Heading",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "Heading2 no space will be not Heading",
+			args: args{
+				input: "##Heading",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := HeadingDetector([]rune(tt.args.input)); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("HeadingDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
+func TestCodeBlockDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input string
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "CodeBlock",
+			args: args{
+				input: "```",
+			},
+			want: want{
+				token.NewCodeBlockFence('`', ""),
+				true,
+			},
+		},
+		{
+			name: "CodeBlock with language",
+			args: args{
+				input: "````go",
+			},
+			want: want{
+				token.NewCodeBlockFence('`', "go"),
+				true,
+			},
+		},
+		{
+			name: "shortage will be not CodeBlock",
+			args: args{
+				input: "``",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "not collected char at 2nd will be not CodeBlock",
+			args: args{
+				input: "`*`",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "not collected char at 3rd will be not CodeBlock",
+			args: args{
+				input: "``*",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := CodeBlockDetector([]rune(tt.args.input)); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("CodeBlockDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
+func TestHorizontalDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input string
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Horizontal by ***",
+			args: args{
+				input: "***",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "Horizontal by ___",
+			args: args{
+				input: "___",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "shortage will be not Horizontal",
+			args: args{
+				input: "**",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "shortage will be not Horizontal",
+			args: args{
+				input: "__",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := HorizontalDetector([]rune(tt.args.input)); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("HorizontalDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
+func TestBlockQuoteDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input string
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Blockquote with paragraph",
+			args: args{
+				input: "> Blockquote",
+			},
+			want: want{
+				token.NewBlockQuote(
+					1,
+					token.NewParagraphBlock("Blockquote", 0),
+				),
+				true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := BlockQuoteDetector([]rune(tt.args.input)); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("BlockQuoteDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
 func TestDetectBlockTypeSuccess(t *testing.T) {
 	t.Parallel()
 
@@ -90,36 +373,6 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 		want token.BlockToken
 	}{
 		{
-			name: "Heading",
-			args: args{input: "# Heading"},
-			want: token.NewHeadingBlock("Heading", 1),
-		},
-		{
-			name: "Heading2",
-			args: args{input: "## Heading"},
-			want: token.NewHeadingBlock("Heading", 2),
-		},
-		{
-			name: "CodeBlock",
-			args: args{input: "```"},
-			want: token.NewCodeBlockFence('`', ""),
-		},
-		{
-			name: "CodeBlock with language",
-			args: args{input: "````go"},
-			want: token.NewCodeBlockFence('`', "go"),
-		},
-		{
-			name: "Horizontal by ***",
-			args: args{input: "***"},
-			want: token.NewHorizontal(),
-		},
-		{
-			name: "Horizontal by ___",
-			args: args{input: "___"},
-			want: token.NewHorizontal(),
-		},
-		{
 			name: "Paragraph",
 			args: args{input: "Paragraph"},
 			want: token.NewParagraphBlock("Paragraph", 0),
@@ -130,12 +383,9 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			want: token.NewHyphen(true, []rune{'-', '-', '-'}),
 		},
 		{
-			name: "Blockquote and Paragraph",
-			args: args{input: "> Blockquote"},
-			want: token.NewBlockQuote(
-				1,
-				token.NewParagraphBlock("Blockquote", 0),
-			),
+			name: "Horizontal shortage by --",
+			args: args{input: "--"},
+			want: token.NewHyphen(false, []rune{'-', '-'}),
 		},
 	}
 
@@ -186,106 +436,6 @@ func BenchmarkDetectBlockType(b *testing.B) {
 		b.Run(tt.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				DetectBlockType(tt.input)
-			}
-		})
-	}
-}
-
-func TestDetectBlockTypeNoSpace(t *testing.T) {
-	t.Parallel()
-
-	type args struct {
-		input string
-	}
-
-	tests := []struct {
-		name string
-		args args
-		want token.BlockToken
-	}{
-		{
-			name: "Heading no space",
-			args: args{input: "#Heading"},
-			want: token.NewParagraphBlock("#Heading", 0),
-		},
-		{
-			name: "Heading2 no space",
-			args: args{input: "##Heading"},
-			want: token.NewParagraphBlock("##Heading", 0),
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			if got := DetectBlockType(tt.args.input); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("DetectBlockType() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestDetectBlockTypeShortage(t *testing.T) {
-	t.Parallel()
-
-	type args struct {
-		input string
-	}
-
-	tests := []struct {
-		name string
-		args args
-		want token.BlockToken
-	}{
-		{
-			name: "CodeBlock shortage",
-			args: args{input: "`"},
-			want: token.NewParagraphBlock("`", 0),
-		},
-		{
-			name: "CodeBlock shortage2",
-			args: args{input: "``"},
-			want: token.NewParagraphBlock("``", 0),
-		},
-		{
-			name: "Horizontal shortage3",
-			args: args{input: "**"},
-			want: token.NewParagraphBlock("**", 0),
-		},
-		{
-			name: "Horizontal shortage4",
-			args: args{input: "*"},
-			want: token.NewParagraphBlock("*", 0),
-		},
-		{
-			name: "Horizontal shortage5",
-			args: args{input: "__"},
-			want: token.NewParagraphBlock("__", 0),
-		},
-		{
-			name: "Horizontal shortage6",
-			args: args{input: "_"},
-			want: token.NewParagraphBlock("_", 0),
-		},
-		{
-			name: "Horizontal shortage",
-			args: args{input: "-"},
-			want: token.NewHyphen(false, []rune{'-'}),
-		},
-		{
-			name: "Horizontal shortage2",
-			args: args{input: "--"},
-			want: token.NewHyphen(false, []rune{'-', '-'}),
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			if got := DetectBlockType(tt.args.input); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("DetectBlockType() = %v, want %v", got, tt.want)
 			}
 		})
 	}

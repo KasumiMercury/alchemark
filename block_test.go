@@ -125,6 +125,16 @@ func TestHeadingDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "First char is not # will be not Heading",
+			args: args{
+				input: "Heading",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
 			name: "Heading7 will be not Heading",
 			args: args{
 				input: "####### Heading",

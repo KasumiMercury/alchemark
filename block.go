@@ -11,14 +11,18 @@ func HeadingDetector(input []rune) (token.BlockToken, bool) {
 			level++
 		} else {
 			if char == ' ' {
-				return token.NewHeadingBlock(string(input[level+1:]), level), true
+				break
 			} else {
 				return nil, false
 			}
 		}
 	}
 
-	return nil, false
+	if level == 0 {
+		return nil, false
+	}
+
+	return token.NewHeadingBlock(string(input[level+1:]), level), true
 }
 
 func CodeBlockDetector(input []rune) (token.BlockToken, bool) {

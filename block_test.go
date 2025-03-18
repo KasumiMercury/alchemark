@@ -129,6 +129,14 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			args: args{input: "---"},
 			want: token.NewHyphen(true, []rune{'-', '-', '-'}),
 		},
+		{
+			name: "Blockquote and Paragraph",
+			args: args{input: "> Blockquote"},
+			want: token.NewBlockQuote(
+				1,
+				token.NewParagraphBlock("Blockquote", 0),
+			),
+		},
 	}
 
 	for _, tt := range tests {

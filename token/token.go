@@ -21,6 +21,8 @@ const (
 	HorizontalBlockType = "Horizontal"
 	SetextBlockType     = "SetextHeading"
 
+	BlockQuoteBlockType = "BlockQuote"
+
 	BlankBlockType = "Blank"
 )
 
@@ -271,6 +273,30 @@ func (s SetextHeading) Type() BlockType {
 }
 func (s SetextHeading) String() string {
 	return fmt.Sprintf("Type: %s", SetextBlockType)
+}
+
+type BlockQuote struct {
+	depth        int
+	contentBlock BlockToken
+}
+
+func NewBlockQuote(depth int, contentBlock BlockToken) BlockQuote {
+	return BlockQuote{
+		depth:        depth,
+		contentBlock: contentBlock,
+	}
+}
+func (b BlockQuote) Type() BlockType {
+	return BlockQuoteBlockType
+}
+func (b BlockQuote) Depth() int {
+	return b.depth
+}
+func (b BlockQuote) ContentBlock() BlockToken {
+	return b.contentBlock
+}
+func (b BlockQuote) String() string {
+	return fmt.Sprintf("Type: %s, Depth: %d, ContentBlock: %s", BlockQuoteBlockType, b.depth, b.contentBlock)
 }
 
 type Blank struct{}

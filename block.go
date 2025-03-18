@@ -66,6 +66,30 @@ func HorizontalDetector(input []rune) (token.BlockToken, bool) {
 	return token.NewHorizontal(), true
 }
 
+func BlockQuoteDetector(input []rune) (token.BlockToken, bool) {
+	if len(input) < 2 {
+		return nil, false
+	}
+
+	level := 0
+	contents := make([]rune, 0, len(input))
+
+	for _, char := range input {
+		if char == '>' {
+			level++
+		} else if char == ' ' {
+			contents = input[level+1:]
+			break
+		} else {
+			return nil, false
+		}
+	}
+
+	contentBlock := DetectBlockType(string(contents))
+
+	return token.NewBlockQuote(level, contentBlock), true
+}
+
 func countIndent(input []rune) int {
 	indent := 0
 	spaceCount := 0
@@ -130,6 +154,10 @@ func DetectBlockType(line string) token.BlockToken {
 		}
 	case '_':
 		if tk, ok := HorizontalDetector(input); ok {
+			return tk
+		}
+	case '>':
+		if tk, ok := BlockQuoteDetector(input); ok {
 			return tk
 		}
 	default:

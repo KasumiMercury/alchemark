@@ -12,57 +12,97 @@ func TestCountIndent(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
-		want  int
+		want  IndentInfo
 	}{
 		{
 			name:  "No indent",
 			input: "No indent",
-			want:  0,
+			want: IndentInfo{
+				0,
+				0,
+				0,
+			},
 		},
 		{
 			name:  "4 spaces indent",
 			input: "    4 spaces indent",
-			want:  1,
+			want: IndentInfo{
+				1,
+				4,
+				0,
+			},
 		},
 		{
 			name:  "8 spaces indent",
 			input: "        8 spaces indent",
-			want:  2,
+			want: IndentInfo{
+				2,
+				8,
+				0,
+			},
 		},
 		{
 			name:  "1 tab indent",
 			input: "\t1 tab indent",
-			want:  1,
+			want: IndentInfo{
+				1,
+				1,
+				0,
+			},
 		},
 		{
 			name:  "2 tabs indent",
 			input: "\t\t2 tabs indent",
-			want:  2,
+			want: IndentInfo{
+				2,
+				2,
+				0,
+			},
 		},
 		{
 			name:  "1 tab 4 spaces indent",
 			input: "\t    1 tab 4 spaces indent",
-			want:  2,
+			want: IndentInfo{
+				2,
+				5,
+				0,
+			},
 		},
 		{
 			name:  "4 spaces 1 tab indent",
 			input: "    \t4 spaces 1 tab indent",
-			want:  2,
+			want: IndentInfo{
+				2,
+				5,
+				0,
+			},
 		},
 		{
 			name:  "1 tab 3 spaces indent",
 			input: "\t   1 tab 3 spaces indent",
-			want:  1,
+			want: IndentInfo{
+				1,
+				4,
+				3,
+			},
 		},
 		{
 			name:  "3 spaces 1 tab indent",
 			input: "   \t3 spaces 1 tab indent",
-			want:  1,
+			want: IndentInfo{
+				1,
+				4,
+				3,
+			},
 		},
 		{
 			name:  "indent sandwiched by spaces",
 			input: "  \t  mix 4 spaces and 1 tab",
-			want:  1,
+			want: IndentInfo{
+				2,
+				5,
+				0,
+			},
 		},
 	}
 
@@ -70,7 +110,7 @@ func TestCountIndent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			if got := countIndent([]rune(tt.input)); got != tt.want {
+			if got := countIndent([]rune(tt.input)); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("countIndent() = %v, want %v", got, tt.want)
 			}
 		})

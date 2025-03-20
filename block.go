@@ -133,34 +133,45 @@ func HyphenDetector(input []rune) (token.BlockToken, bool) {
 	return token.NewHyphen(ok, input), true
 }
 
-func countIndent(input []rune) int {
-	indent := 0
+type IndentInfo struct {
+	Depth       int
+	SeekPos     int
+	RemainSpace int
+}
+
+func countIndent(input []rune) IndentInfo {
 	spaceCount := 0
+	pos := 0
 
 	for _, char := range input {
-		switch char {
-		case '\t':
-			indent++
-			spaceCount = 0
-		case ' ':
-			spaceCount++
-			if spaceCount == 4 {
-				indent++
-				spaceCount = 0
-			}
-		default:
-			return indent
+
+		if char == '\t' {
+			spaceCount += 4
+			pos++
+			continue
 		}
+
+		if char == ' ' {
+			spaceCount++
+			pos++
+			continue
+		}
+
+		break
 	}
 
-	return indent
+	return IndentInfo{
+		Depth:       spaceCount / 4,
+		SeekPos:     pos,
+		RemainSpace: spaceCount % 4,
+	}
 }
 
 func DetectBlockType(line string) token.BlockToken {
 	input := []rune(line)
 
-	indent := countIndent(input)
-	input = input[indent:]
+	indentInfo := countIndent(input)
+	input = input[indentInfo.SeekPos:]
 
 	if len(input) == 0 {
 		return token.NewBlank()
@@ -168,14 +179,17 @@ func DetectBlockType(line string) token.BlockToken {
 
 	firstChar := input[0]
 
-	if indent > 0 {
+	if indentInfo.Depth > 0 {
+		// TODO: handle remaining space
+
 		switch firstChar {
 		case '-':
+			// TODO: If there is remaining space, can the line be a list item?
 			if tk, ok := ListItemDetector(input); ok {
-				return tk.(*token.ListItem).IndentedListItem(indent)
+				return tk.(token.ListItem).IndentedListItem(indentInfo.Depth)
 			}
 		default:
-			return token.NewIndentedBlock(indent, input)
+			return token.NewIndentedBlock(indentInfo.Depth, input)
 		}
 	}
 
@@ -207,8 +221,8 @@ func DetectBlockType(line string) token.BlockToken {
 			return tk
 		}
 	default:
-		return token.NewParagraphBlock(line, indent)
+		return token.NewParagraphBlock(line, 0)
 	}
 
-	return token.NewParagraphBlock(line, indent)
+	return token.NewParagraphBlock(line, 0)
 }

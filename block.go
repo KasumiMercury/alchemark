@@ -171,7 +171,9 @@ func DetectBlockType(line string) token.BlockToken {
 	if indent > 0 {
 		switch firstChar {
 		case '-':
-		// TODO: nested list
+			if tk, ok := ListItemDetector(input); ok {
+				return tk.(*token.ListItem).IndentedListItem(indent)
+			}
 		default:
 			return token.NewIndentedBlock(indent, input)
 		}

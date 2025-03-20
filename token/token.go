@@ -23,6 +23,8 @@ const (
 
 	BlockQuoteBlockType = "BlockQuote"
 
+	ListItemBlockType = "ListItem"
+
 	BlankBlockType = "Blank"
 )
 
@@ -297,6 +299,39 @@ func (b BlockQuote) ContentBlock() BlockToken {
 }
 func (b BlockQuote) String() string {
 	return fmt.Sprintf("Type: %s, Depth: %d, ContentBlock: %s", BlockQuoteBlockType, b.depth, b.contentBlock)
+}
+
+type ListItem struct {
+	marker       rune
+	depth        int
+	contentBlock BlockToken
+}
+
+func NewListItem(marker rune, depth int, contentBlock BlockToken) ListItem {
+	return ListItem{
+		marker:       marker,
+		depth:        depth,
+		contentBlock: contentBlock,
+	}
+}
+func (l ListItem) Type() BlockType {
+	return ListItemBlockType
+}
+func (l ListItem) Marker() rune {
+	return l.marker
+}
+func (l ListItem) Depth() int {
+	return l.depth
+}
+func (l ListItem) ContentBlock() BlockToken {
+	return l.contentBlock
+}
+func (l ListItem) String() string {
+	return fmt.Sprintf("Type: %s, Marker: %c, Depth: %d, ContentBlock: %s", ListItemBlockType, l.marker, l.depth, l.contentBlock)
+}
+
+func (l ListItem) NewIndentedListItem(depth int, contentBlock BlockToken) ListItem {
+	return NewListItem(l.marker, depth, contentBlock)
 }
 
 type Blank struct{}

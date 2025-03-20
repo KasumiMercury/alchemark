@@ -94,13 +94,38 @@ func BlockQuoteDetector(input []rune) (token.BlockToken, bool) {
 	return token.NewBlockQuote(level, contentBlock), true
 }
 
-func HyphenDetector(input []rune) (token.BlockToken, bool) {
+func ListItemDetector(input []rune) (token.BlockToken, bool) {
 	if input[0] != '-' {
 		return nil, false
 	}
 
 	if input[1] != ' ' {
-		// TODO: list detection
+		return nil, false
+	}
+
+	// skip space
+	pos := 2
+	for _, char := range input[2:] {
+		if char == ' ' {
+			pos++
+		} else {
+			break
+		}
+	}
+
+	contentBlock := DetectBlockType(string(input[pos:]))
+
+	return token.NewListItem(input[0], 0, contentBlock), true
+}
+
+func HyphenDetector(input []rune) (token.BlockToken, bool) {
+	if input[0] != '-' {
+		return nil, false
+	}
+
+	if len(input) > 1 && input[1] == ' ' {
+		tk, ok := ListItemDetector(input)
+		return tk, ok
 	}
 
 	_, ok := HorizontalDetector(input)

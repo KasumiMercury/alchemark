@@ -370,6 +370,50 @@ func TestBlockQuoteDetector(t *testing.T) {
 	}
 }
 
+func TestListItemDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input string
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "List item",
+			args: args{
+				input: "- List item",
+			},
+			want: want{
+				token.NewListItem(
+					'-',
+					0,
+					token.NewParagraphBlock("List item", 0),
+				),
+				true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := ListItemDetector([]rune(tt.args.input)); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("ListItemDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
 func TestHyphenDetector(t *testing.T) {
 	t.Parallel()
 
@@ -404,6 +448,20 @@ func TestHyphenDetector(t *testing.T) {
 			},
 			want: want{
 				token.NewHyphen(false, []rune{'-', '-'}),
+				true,
+			},
+		},
+		{
+			name: "List item",
+			args: args{
+				input: []rune{'-', ' ', 'L', 'i', 's', 't', ' ', 'i', 't', 'e', 'm'},
+			},
+			want: want{
+				token.NewListItem(
+					'-',
+					0,
+					token.NewParagraphBlock("List item", 0),
+				),
 				true,
 			},
 		},

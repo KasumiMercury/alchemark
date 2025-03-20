@@ -370,6 +370,56 @@ func TestBlockQuoteDetector(t *testing.T) {
 	}
 }
 
+func TestHyphenDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input []rune
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Horizontal by ---",
+			args: args{
+				input: []rune{'-', '-', '-'},
+			},
+			want: want{
+				token.NewHyphen(true, []rune{'-', '-', '-'}),
+				true,
+			},
+		},
+		{
+			name: "Horizontal shortage by --",
+			args: args{
+				input: []rune{'-', '-'},
+			},
+			want: want{
+				token.NewHyphen(false, []rune{'-', '-'}),
+				true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := HyphenDetector(tt.args.input); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("HyphenDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
 func TestDetectBlockTypeSuccess(t *testing.T) {
 	t.Parallel()
 
@@ -386,16 +436,6 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			name: "Paragraph",
 			args: args{input: "Paragraph"},
 			want: token.NewParagraphBlock("Paragraph", 0),
-		},
-		{
-			name: "Horizontal by ---",
-			args: args{input: "---"},
-			want: token.NewHyphen(true, []rune{'-', '-', '-'}),
-		},
-		{
-			name: "Horizontal shortage by --",
-			args: args{input: "--"},
-			want: token.NewHyphen(false, []rune{'-', '-'}),
 		},
 	}
 

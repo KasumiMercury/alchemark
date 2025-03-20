@@ -94,6 +94,20 @@ func BlockQuoteDetector(input []rune) (token.BlockToken, bool) {
 	return token.NewBlockQuote(level, contentBlock), true
 }
 
+func HyphenDetector(input []rune) (token.BlockToken, bool) {
+	if input[0] != '-' {
+		return nil, false
+	}
+
+	if input[1] != ' ' {
+		// TODO: list detection
+	}
+
+	_, ok := HorizontalDetector(input)
+
+	return token.NewHyphen(ok, input), true
+}
+
 func countIndent(input []rune) int {
 	indent := 0
 	spaceCount := 0
@@ -150,8 +164,9 @@ func DetectBlockType(line string) token.BlockToken {
 	case '=':
 		return token.NewEqual(input)
 	case '-':
-		_, ok := HorizontalDetector(input)
-		return token.NewHyphen(ok, input)
+		if tk, ok := HyphenDetector(input); ok {
+			return tk
+		}
 	case '*':
 		if tk, ok := HorizontalDetector(input); ok {
 			return tk

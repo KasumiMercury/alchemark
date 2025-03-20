@@ -518,6 +518,9 @@ func TestHyphenDetector(t *testing.T) {
 	}
 }
 
+// TODO: Add test for AsteriskDetector
+// TODO: Add test for EqualDetector
+
 func TestDetectBlockTypeSuccess(t *testing.T) {
 	t.Parallel()
 

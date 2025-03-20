@@ -95,7 +95,7 @@ func BlockQuoteDetector(input []rune) (token.BlockToken, bool) {
 }
 
 func ListItemDetector(input []rune) (token.BlockToken, bool) {
-	if input[0] != '-' {
+	if input[0] != '-' && input[0] != '+' && input[0] != '*' {
 		return nil, false
 	}
 
@@ -124,6 +124,7 @@ func HyphenDetector(input []rune) (token.BlockToken, bool) {
 	}
 
 	if len(input) > 1 && input[1] == ' ' {
+		// TODO: when the line can be a horizontal line, it should be a horizontal line
 		tk, ok := ListItemDetector(input)
 		return tk, ok
 	}
@@ -131,6 +132,24 @@ func HyphenDetector(input []rune) (token.BlockToken, bool) {
 	_, ok := HorizontalDetector(input)
 
 	return token.NewHyphen(ok, input), true
+}
+
+func AsteriskDetector(input []rune) (token.BlockToken, bool) {
+	if input[0] != '*' {
+		return nil, false
+	}
+
+	if len(input) > 1 && input[1] == ' ' {
+		// TODO: when the line can be a horizontal line, it should be a horizontal line
+		tk, ok := ListItemDetector(input)
+		return tk, ok
+	}
+
+	if tk, ok := HorizontalDetector(input); ok {
+		return tk, ok
+	}
+
+	return nil, false
 }
 
 type IndentInfo struct {
@@ -202,24 +221,28 @@ func DetectBlockType(line string) token.BlockToken {
 		if tk, ok := CodeBlockDetector(input); ok {
 			return tk
 		}
-	case '=':
-		return token.NewEqual(input)
 	case '-':
 		if tk, ok := HyphenDetector(input); ok {
 			return tk
 		}
 	case '*':
-		if tk, ok := HorizontalDetector(input); ok {
-			return tk
-		}
-	case '_':
-		if tk, ok := HorizontalDetector(input); ok {
+		if tk, ok := AsteriskDetector(input); ok {
 			return tk
 		}
 	case '>':
 		if tk, ok := BlockQuoteDetector(input); ok {
 			return tk
 		}
+	case '+':
+		if tk, ok := ListItemDetector(input); ok {
+			return tk
+		}
+	case '_':
+		if tk, ok := HorizontalDetector(input); ok {
+			return tk
+		}
+	case '=':
+		return token.NewEqual(input)
 	default:
 		return token.NewParagraphBlock(line, 0)
 	}

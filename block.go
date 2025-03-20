@@ -205,7 +205,7 @@ func DetectBlockType(line string) token.BlockToken {
 		case '-':
 			// TODO: If there is remaining space, can the line be a list item?
 			if tk, ok := ListItemDetector(input); ok {
-				return tk.(token.ListItem).IndentedListItem(indentInfo.Depth)
+				return tk.(token.ListItem).Indent(indentInfo.Depth)
 			}
 		default:
 			return token.NewIndentedBlock(indentInfo.Depth, input)

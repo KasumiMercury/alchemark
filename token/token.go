@@ -330,7 +330,7 @@ func (l ListItem) String() string {
 	return fmt.Sprintf("Type: %s, Marker: %c, Depth: %d, ContentBlock: %s", ListItemBlockType, l.marker, l.depth, l.contentBlock)
 }
 
-func (l ListItem) IndentedListItem(depth int) ListItem {
+func (l ListItem) Indent(depth int) ListItem {
 	return NewListItem(l.marker, depth, l.contentBlock)
 }
 

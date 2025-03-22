@@ -61,10 +61,10 @@ func HorizontalDetector(input []rune) (token.BlockToken, bool) {
 		} else {
 			return nil, false
 		}
+	}
 
-		if hCharCount > 2 {
-			break
-		}
+	if hCharCount < 3 {
+		return nil, false
 	}
 
 	return token.NewHorizontal(), true

@@ -335,6 +335,16 @@ func TestHorizontalDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "Horizontal by ---",
+			args: args{
+				input: "---",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
 			name: "shortage will be not Horizontal",
 			args: args{
 				input: "**",
@@ -348,6 +358,16 @@ func TestHorizontalDetector(t *testing.T) {
 			name: "shortage will be not Horizontal",
 			args: args{
 				input: "__",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "shortage will be not Horizontal",
+			args: args{
+				input: "--",
 			},
 			want: want{
 				nil,
@@ -375,6 +395,16 @@ func TestHorizontalDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "more than 3 will be used as Horizontal",
+			args: args{
+				input: "----",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
 			name: "space between will allowed",
 			args: args{
 				input: "- - -",
@@ -388,6 +418,16 @@ func TestHorizontalDetector(t *testing.T) {
 			name: "space between will allowed",
 			args: args{
 				input: "**  * ** * ** * **",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "start with space will allowed",
+			args: args{
+				input: "-    --",
 			},
 			want: want{
 				token.NewHorizontal(),
@@ -552,12 +592,12 @@ func TestHyphenDetector(t *testing.T) {
 			},
 		},
 		{
-			name: "Horizontal shortage by --",
+			name: "not Horizontal",
 			args: args{
-				input: []rune{'-', '-'},
+				input: []rune{'-', '-', 'a'},
 			},
 			want: want{
-				token.NewHyphen(false, []rune{'-', '-'}),
+				token.NewHyphen(false, []rune{'-', '-', 'a'}),
 				true,
 			},
 		},

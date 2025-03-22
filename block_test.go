@@ -354,6 +354,76 @@ func TestHorizontalDetector(t *testing.T) {
 				false,
 			},
 		},
+		{
+			name: "more than 3 will be used as Horizontal",
+			args: args{
+				input: "****",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "more than 3 will be used as Horizontal",
+			args: args{
+				input: "____",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "space between will allowed",
+			args: args{
+				input: "- - -",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "space between will allowed",
+			args: args{
+				input: "**  * ** * ** * **",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "end with space will allowed",
+			args: args{
+				input: "---    ",
+			},
+			want: want{
+				token.NewHorizontal(),
+				true,
+			},
+		},
+		{
+			name: "other character included will be not Horizontal",
+			args: args{
+				input: "---a",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "other character included will be not Horizontal",
+			args: args{
+				input: "-*-***",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

@@ -52,7 +52,7 @@ func HorizontalDetector(input []rune) (token.BlockToken, bool) {
 
 	// first char is already checked
 	for _, char := range input[1:] {
-		if char != ' ' {
+		if char == ' ' {
 			continue
 		}
 

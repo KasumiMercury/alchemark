@@ -2,27 +2,41 @@ package main
 
 import (
 	"github.com/KasumiMercury/alchemark/token"
+	"strings"
 )
 
 func HeadingDetector(input []rune) (token.BlockToken, bool) {
 	level := 0
-	for _, char := range input {
+
+	pos := 0
+	for i, char := range input {
 		if char == '#' && level < 6 {
 			level++
 		} else {
-			if char == ' ' {
-				break
-			} else {
-				return nil, false
-			}
+			pos = i
+			break
 		}
+	}
+
+	tailPos := len(input) - 1
+
+	if pos != tailPos && input[pos] != ' ' {
+		return nil, false
 	}
 
 	if level == 0 {
 		return nil, false
 	}
 
-	return token.NewHeadingBlock(string(input[level+1:]), level), true
+	if pos == tailPos {
+		return token.NewHeadingBlock("", level), true
+	}
+
+	inlineRunes := input[level+1:]
+	inlineString := string(inlineRunes)
+	trimString := strings.TrimSpace(inlineString)
+
+	return token.NewHeadingBlock(trimString, level), true
 }
 
 func CodeBlockDetector(input []rune) (token.BlockToken, bool) {

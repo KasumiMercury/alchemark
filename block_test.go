@@ -195,13 +195,43 @@ func TestHeadingDetector(t *testing.T) {
 			},
 		},
 		{
-			name: "Heading2 no space will be not Heading",
+			name: "escaped # will be not Heading",
 			args: args{
-				input: "##Heading",
+				input: "\\# Heading",
 			},
 			want: want{
 				nil,
 				false,
+			},
+		},
+		{
+			name: "leading or trailing space will be removed",
+			args: args{
+				input: "#   Heading    ",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 1),
+				true,
+			},
+		},
+		{
+			name: "inline can be empty",
+			args: args{
+				input: "#",
+			},
+			want: want{
+				token.NewHeadingBlock("", 1),
+				true,
+			},
+		},
+		{
+			name: "inline can be empty",
+			args: args{
+				input: "## ",
+			},
+			want: want{
+				token.NewHeadingBlock("", 2),
+				true,
 			},
 		},
 	}

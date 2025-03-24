@@ -265,7 +265,7 @@ func TestCodeBlockDetector(t *testing.T) {
 		want want
 	}{
 		{
-			name: "CodeBlock",
+			name: "CodeBlock by ```",
 			args: args{
 				input: "```",
 			},
@@ -275,9 +275,9 @@ func TestCodeBlockDetector(t *testing.T) {
 			},
 		},
 		{
-			name: "CodeBlock with language",
+			name: "CodeBlock by ``` with infoString",
 			args: args{
-				input: "````go",
+				input: "```go",
 			},
 			want: want{
 				token.NewCodeBlockFence('`', "go"),
@@ -285,9 +285,39 @@ func TestCodeBlockDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "CodeBlock by ~~~",
+			args: args{
+				input: "~~~",
+			},
+			want: want{
+				token.NewCodeBlockFence('~', ""),
+				true,
+			},
+		},
+		{
+			name: "CodeBlock by ~~~ with infoString",
+			args: args{
+				input: "~~~ruby",
+			},
+			want: want{
+				token.NewCodeBlockFence('~', "ruby"),
+				true,
+			},
+		},
+		{
 			name: "shortage will be not CodeBlock",
 			args: args{
 				input: "``",
+			},
+			want: want{
+				nil,
+				false,
+			},
+		},
+		{
+			name: "shortage will be not CodeBlock",
+			args: args{
+				input: "~~",
 			},
 			want: want{
 				nil,

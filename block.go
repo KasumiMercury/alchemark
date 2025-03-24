@@ -44,7 +44,9 @@ func CodeBlockDetector(input []rune) (token.BlockToken, bool) {
 		return nil, false
 	}
 
-	if input[0] == '`' && input[1] == '`' && input[2] == '`' {
+	fenceChar := input[0]
+
+	if input[1] == fenceChar && input[2] == fenceChar {
 		// TODO: infoStringのスペース取り扱い
 		infoString := ""
 		if len(input) > 3 {
@@ -232,6 +234,10 @@ func DetectBlockType(line string) token.BlockToken {
 			return tk
 		}
 	case '`':
+		if tk, ok := CodeBlockDetector(input); ok {
+			return tk
+		}
+	case '~':
 		if tk, ok := CodeBlockDetector(input); ok {
 			return tk
 		}

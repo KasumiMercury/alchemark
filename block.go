@@ -49,9 +49,18 @@ func CodeBlockDetector(input []rune) (token.BlockToken, bool) {
 	if input[1] == fenceChar && input[2] == fenceChar {
 		// TODO: infoStringのスペース取り扱い
 		infoString := ""
+
 		if len(input) > 3 {
-			infoString = string(input[4:])
+			for i, char := range input[3:] {
+				if char == fenceChar {
+					continue
+				}
+
+				infoString += string(input[i+3:])
+				break
+			}
 		}
+
 		return token.NewCodeBlockFence(input[0], infoString), true
 	}
 

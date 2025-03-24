@@ -305,6 +305,26 @@ func TestCodeBlockDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "long CodeBlock will be allowed",
+			args: args{
+				input: "````",
+			},
+			want: want{
+				token.NewCodeBlockFence('`', ""),
+				true,
+			},
+		},
+		{
+			name: "long CodeBlock with infoString will be allowed",
+			args: args{
+				input: "````python",
+			},
+			want: want{
+				token.NewCodeBlockFence('`', "python"),
+				true,
+			},
+		},
+		{
 			name: "shortage will be not CodeBlock",
 			args: args{
 				input: "``",

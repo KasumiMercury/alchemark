@@ -729,6 +729,16 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 			want: token.NewListItem('-', 1, token.NewParagraphBlock("List item", 0)),
 		},
 		{
+			name: "IndentedBlock",
+			args: args{input: "    IndentedBlock"},
+			want: token.NewIndentedBlock(1, []rune("IndentedBlock")),
+		},
+		{
+			name: "IndentedBlock with additional space",
+			args: args{input: "      IndentedBlock"},
+			want: token.NewIndentedBlock(1, []rune("  IndentedBlock")),
+		},
+		{
 			name: "Paragraph",
 			args: args{input: "Paragraph"},
 			want: token.NewParagraphBlock("Paragraph", 0),

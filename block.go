@@ -233,7 +233,15 @@ func DetectBlockType(line string) token.BlockToken {
 				return tk.(token.ListItem).Indent(indentInfo.Depth)
 			}
 		default:
-			return token.NewIndentedBlock(indentInfo.Depth, input)
+			// Add remaining space to input
+			remainingSpaceRunes := make([]rune, indentInfo.RemainSpace)
+			for i := 0; i < indentInfo.RemainSpace; i++ {
+				remainingSpaceRunes[i] = ' '
+			}
+
+			selfRunes := append(remainingSpaceRunes, input...)
+
+			return token.NewIndentedBlock(indentInfo.Depth, selfRunes)
 		}
 	}
 

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/KasumiMercury/alchemark/token"
 	"strings"
+
+	"github.com/KasumiMercury/alchemark/token"
 )
 
 func HeadingDetector(input []rune) (token.BlockToken, bool) {

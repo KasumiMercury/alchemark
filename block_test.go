@@ -216,6 +216,66 @@ func TestHeadingDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "Heading with closing hashes",
+			args: args{
+				input: "### Heading ###   ",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 3),
+				true,
+			},
+		},
+		{
+			name: "Heading keeps inline hashes without separator",
+			args: args{
+				input: "### Heading###",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading###", 3),
+				true,
+			},
+		},
+		{
+			name: "Opening sequence will be prioritized over longer closing sequence",
+			args: args{
+				input: "### Heading ###########",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 3),
+				true,
+			},
+		},
+		{
+			name: "Opening sequence will be prioritized over shorter closing sequence",
+			args: args{
+				input: "### Heading #",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 3),
+				true,
+			},
+		},
+		{
+			name: "Heading retains hashes when followed by text",
+			args: args{
+				input: "# Heading ##text",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading ##text", 1),
+				true,
+			},
+		},
+		{
+			name: "Heading allows tab after marker",
+			args: args{
+				input: "#\tHeading",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading", 1),
+				true,
+			},
+		},
+		{
 			name: "inline can be empty",
 			args: args{
 				input: "#",

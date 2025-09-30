@@ -1,43 +1,76 @@
 package main
 
 import (
-	"strings"
-
 	"github.com/KasumiMercury/alchemark/token"
 )
 
 func HeadingDetector(input []rune) (token.BlockToken, bool) {
-	level := 0
+	if len(input) == 0 {
+		return nil, false
+	}
 
-	pos := 0
-	for i, char := range input {
-		if char == '#' && level < 6 {
-			level++
-		} else {
-			pos = i
-			break
+	level := 0
+	idx := 0
+
+	for idx < len(input) && input[idx] == '#' {
+		level++
+		idx++
+	}
+
+	if level == 0 || level > 6 {
+		return nil, false
+	}
+
+	if idx < len(input) {
+		if input[idx] != ' ' && input[idx] != '\t' {
+			return nil, false
+		}
+
+		for idx < len(input) && (input[idx] == ' ' || input[idx] == '\t') {
+			idx++
 		}
 	}
 
-	tailPos := len(input) - 1
+	content := input[idx:]
 
-	if pos != tailPos && input[pos] != ' ' {
-		return nil, false
-	}
-
-	if level == 0 {
-		return nil, false
-	}
-
-	if pos == tailPos {
+	if len(content) == 0 {
 		return token.NewHeadingBlock("", level), true
 	}
 
-	inlineRunes := input[level+1:]
-	inlineString := string(inlineRunes)
-	trimString := strings.TrimSpace(inlineString)
+	end := len(content) - 1
+	for end >= 0 && (content[end] == ' ' || content[end] == '\t') {
+		end--
+	}
 
-	return token.NewHeadingBlock(trimString, level), true
+	if end < 0 {
+		return token.NewHeadingBlock("", level), true
+	}
+
+	if content[end] != '#' {
+		return token.NewHeadingBlock(string(content[:end+1]), level), true
+	}
+
+	closingStart := end
+	for closingStart >= 0 && content[closingStart] == '#' {
+		closingStart--
+	}
+
+	if closingStart >= 0 && content[closingStart] != ' ' && content[closingStart] != '\t' {
+		return token.NewHeadingBlock(string(content[:end+1]), level), true
+	}
+
+	trimPos := closingStart
+	for trimPos >= 0 && (content[trimPos] == ' ' || content[trimPos] == '\t') {
+		trimPos--
+	}
+
+	if trimPos < 0 {
+		content = content[:0]
+	} else {
+		content = content[:trimPos+1]
+	}
+
+	return token.NewHeadingBlock(string(content), level), true
 }
 
 func CodeBlockDetector(input []rune) (token.BlockToken, bool) {

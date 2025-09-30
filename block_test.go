@@ -732,7 +732,80 @@ func TestHyphenDetector(t *testing.T) {
 	}
 }
 
-// TODO: Add test for AsteriskDetector
+func TestAsteriskDetector(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		input []rune
+	}
+
+	type want struct {
+		token  token.BlockToken
+		detect bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Horizontal by ***",
+			args: args{
+				input: []rune{'*', '*', '*'},
+			},
+			want: want{
+				token.NewAsterisk(true, []rune{'*', '*', '*'}),
+				true,
+			},
+		},
+		{
+			name: "not Horizontal",
+			args: args{
+				input: []rune{'*', '*', 'a'},
+			},
+			want: want{
+				token.NewAsterisk(false, []rune{'*', '*', 'a'}),
+				true,
+			},
+		},
+		{
+			name: "Horizontal by *** with space",
+			args: args{
+				input: []rune{'*', ' ', '*', ' ', '*'},
+			},
+			want: want{
+				token.NewAsterisk(true, []rune{'*', ' ', '*', ' ', '*'}),
+				true,
+			},
+		},
+		{
+			name: "List item",
+			args: args{
+				input: []rune{'*', ' ', 'L', 'i', 's', 't', ' ', 'i', 't', 'e', 'm'},
+			},
+			want: want{
+				token.NewListItem(
+					'*',
+					0,
+					token.NewParagraphBlock("List item", 0),
+				),
+				true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got, detect := AsteriskDetector(tt.args.input); !reflect.DeepEqual(got, tt.want.token) || detect != tt.want.detect {
+				t.Errorf("HyphenDetector() = {%v}, %v / want {%v}, %v", got, detect, tt.want.token, tt.want.detect)
+			}
+		})
+	}
+}
+
 // TODO: Add test for EqualDetector
 
 func TestDetectBlockTypeSuccess(t *testing.T) {

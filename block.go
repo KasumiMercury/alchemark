@@ -155,8 +155,8 @@ func HyphenDetector(input []rune) (token.BlockToken, bool) {
 		if ok {
 			return token.NewHyphen(ok, input), true
 		}
-		lTk, ok := ListItemDetector(input)
-		return lTk, ok
+		tk, ok := ListItemDetector(input)
+		return tk, ok
 	}
 
 	_, ok := HorizontalDetector(input)
@@ -171,15 +171,17 @@ func AsteriskDetector(input []rune) (token.BlockToken, bool) {
 
 	if len(input) > 1 && input[1] == ' ' {
 		// TODO: when the line can be a horizontal line, it should be a horizontal line
+		_, ok := HorizontalDetector(input)
+		if ok {
+			return token.NewAsterisk(ok, input), true
+		}
 		tk, ok := ListItemDetector(input)
 		return tk, ok
 	}
 
-	if tk, ok := HorizontalDetector(input); ok {
-		return tk, ok
-	}
+	_, ok := HorizontalDetector(input)
 
-	return nil, false
+	return token.NewAsterisk(ok, input), true
 }
 
 type IndentInfo struct {

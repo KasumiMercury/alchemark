@@ -696,6 +696,16 @@ func TestHyphenDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "Horizontal by --- with space",
+			args: args{
+				input: []rune{'-', ' ', '-', ' ', '-'},
+			},
+			want: want{
+				token.NewHyphen(true, []rune{'-', ' ', '-', ' ', '-'}),
+				true,
+			},
+		},
+		{
 			name: "List item",
 			args: args{
 				input: []rune{'-', ' ', 'L', 'i', 's', 't', ' ', 'i', 't', 'e', 'm'},

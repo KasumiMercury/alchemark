@@ -256,6 +256,36 @@ func TestHeadingDetector(t *testing.T) {
 			},
 		},
 		{
+			name: "Escaped closing hashes are retained",
+			args: args{
+				input: "### Heading \\###",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading \\###", 3),
+				true,
+			},
+		},
+		{
+			name: "Escaped all closing hashes are retained",
+			args: args{
+				input: "### Heading \\#\\#\\#",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading \\#\\#\\#", 3),
+				true,
+			},
+		},
+		{
+			name: "Escaped middle of closing hashes, closing sequence are retained",
+			args: args{
+				input: "### Heading ##\\##",
+			},
+			want: want{
+				token.NewHeadingBlock("Heading ##\\##", 3),
+				true,
+			},
+		},
+		{
 			name: "Heading retains hashes when followed by text",
 			args: args{
 				input: "# Heading ##text",

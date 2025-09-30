@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/KasumiMercury/alchemark/token"
 	"reflect"
 	"testing"
+
+	"github.com/KasumiMercury/alchemark/token"
 )
 
 func TestParser_ParseToBlock(t *testing.T) {
@@ -69,6 +70,13 @@ func TestParser_ParseToBlock(t *testing.T) {
 			want: []token.BlockToken{
 				token.NewHeadingBlock("Heading", 1),
 				token.NewParagraphBlock("--", 0),
+				token.NewParagraphBlock("Paragraph", 0),
+			},
+		},
+		{
+			input: "-\nParagraph",
+			want: []token.BlockToken{
+				token.NewParagraphBlock("-", 0),
 				token.NewParagraphBlock("Paragraph", 0),
 			},
 		},

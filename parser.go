@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/KasumiMercury/alchemark/token"
 	"sort"
 	"strings"
 	"sync"
+
+	"github.com/KasumiMercury/alchemark/token"
 )
 
 type Parser struct {
@@ -84,10 +85,15 @@ func (p *Parser) ParseToBlocks() []token.BlockToken {
 		}
 
 		if sht, ok := block.token.(token.SetextHeadingToken); ok {
-			target, self := sht.ConvertBlockToSetextHeading(blocks[i-1].token)
-			tokens[len(tokens)-1] = target
-			tokens = append(tokens, self)
-			continue
+			if i == 0 {
+				tokens = append(tokens, sht.ConvertBlockToParagraph())
+				continue
+			} else {
+				target, self := sht.ConvertBlockToSetextHeading(blocks[i-1].token)
+				tokens[len(tokens)-1] = target
+				tokens = append(tokens, self)
+				continue
+			}
 		}
 
 		if openingCodeBlockFence != nil {

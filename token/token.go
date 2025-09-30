@@ -38,6 +38,7 @@ type BlockToken interface {
 type SetextHeadingToken interface {
 	BlockToken
 	ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken)
+	ConvertBlockToParagraph() BlockToken
 }
 
 type HeadingBlock struct {
@@ -226,6 +227,9 @@ func (h HyphenToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken,
 		return target, NewParagraphBlock(string(h.self), 0)
 	}
 }
+func (h HyphenToken) ConvertBlockToParagraph() BlockToken {
+	return NewParagraphBlock(string(h.self), 0)
+}
 func (h HyphenToken) String() string {
 	return fmt.Sprintf("Type: %s, CanHorizontal: %t", HyphenBlockType, h.canHorizontal)
 }
@@ -276,6 +280,9 @@ func (e EqualToken) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, 
 	}
 
 	return target, NewParagraphBlock(string(e.self), 0)
+}
+func (e EqualToken) ConvertBlockToParagraph() BlockToken {
+	return NewParagraphBlock(string(e.self), 0)
 }
 func (e EqualToken) String() string {
 	return fmt.Sprintf("Type: %s", EqualBlockType)

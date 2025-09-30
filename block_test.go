@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/KasumiMercury/alchemark/token"
 	"reflect"
 	"testing"
+
+	"github.com/KasumiMercury/alchemark/token"
 )
 
 func TestCountIndent(t *testing.T) {
@@ -723,6 +724,26 @@ func TestDetectBlockTypeSuccess(t *testing.T) {
 		args args
 		want token.BlockToken
 	}{
+		{
+			name: "Heading with 1 space",
+			args: args{input: " # Heading"},
+			want: token.NewHeadingBlock("Heading", 1),
+		},
+		{
+			name: "Heading with 2 spaces",
+			args: args{input: "  ## Heading"},
+			want: token.NewHeadingBlock("Heading", 2),
+		},
+		{
+			name: "Heading with 3 spaces",
+			args: args{input: "   ### Heading"},
+			want: token.NewHeadingBlock("Heading", 3),
+		},
+		{
+			name: "4 spaces before # should be IndentedBlock",
+			args: args{input: "    # Heading"},
+			want: token.NewIndentedBlock(1, []rune("# Heading")),
+		},
 		{
 			name: "Indented List item",
 			args: args{input: "    - List item"},

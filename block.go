@@ -103,12 +103,16 @@ func BlockQuoteDetector(input []rune) (token.BlockToken, bool) {
 
 	level := 0
 	contents := make([]rune, 0, len(input))
+	spaceCount := 0
 
 	for _, char := range input {
 		if char == '>' {
 			level++
+		} else if char == ' ' {
+			spaceCount++
+			continue
 		} else {
-			contents = input[level:]
+			contents = input[level+spaceCount:]
 		}
 	}
 

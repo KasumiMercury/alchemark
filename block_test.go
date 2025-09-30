@@ -588,6 +588,19 @@ func TestBlockQuoteDetector(t *testing.T) {
 				true,
 			},
 		},
+		{
+			name: "Spaces after > can be omitted",
+			args: args{
+				input: ">Blockquote",
+			},
+			want: want{
+				token.NewBlockQuote(
+					1,
+					token.NewParagraphBlock("Blockquote", 0),
+				),
+				true,
+			},
+		},
 	}
 
 	for _, tt := range tests {

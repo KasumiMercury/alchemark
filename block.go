@@ -203,18 +203,20 @@ func AsteriskDetector(input []rune) (token.BlockToken, bool) {
 	}
 
 	if len(input) > 1 && input[1] == ' ' {
-		// TODO: when the line can be a horizontal line, it should be a horizontal line
-		_, ok := HorizontalDetector(input)
+		hTk, ok := HorizontalDetector(input)
 		if ok {
-			return token.NewAsterisk(ok, input), true
+			return hTk, true
 		}
-		tk, ok := ListItemDetector(input)
-		return tk, ok
+		lTk, ok := ListItemDetector(input)
+		return lTk, ok
 	}
 
-	_, ok := HorizontalDetector(input)
+	hTk, ok := HorizontalDetector(input)
+	if ok {
+		return hTk, true
+	}
 
-	return token.NewAsterisk(ok, input), true
+	return token.NewParagraphBlock(string(input), 0), true
 }
 
 type IndentInfo struct {

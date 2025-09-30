@@ -234,34 +234,6 @@ func (h HyphenToken) String() string {
 	return fmt.Sprintf("Type: %s, CanHorizontal: %t", HyphenBlockType, h.canHorizontal)
 }
 
-type Asterisk struct {
-	canHorizontal bool
-	self          []rune
-}
-
-func NewAsterisk(canHorizontal bool, self []rune) Asterisk {
-	return Asterisk{
-		canHorizontal: canHorizontal,
-		self:          self,
-	}
-}
-func (a Asterisk) Type() BlockType {
-	return HyphenBlockType
-}
-func (a Asterisk) CanHorizontal() bool {
-	return a.canHorizontal
-}
-func (a Asterisk) ConvertBlockToSetextHeading(target BlockToken) (BlockToken, BlockToken) {
-	if a.canHorizontal {
-		return target, NewHorizontal()
-	} else {
-		return target, NewParagraphBlock(string(a.self), 0)
-	}
-}
-func (a Asterisk) String() string {
-	return fmt.Sprintf("Type: %s, CanHorizontal: %t", HyphenBlockType, a.canHorizontal)
-}
-
 type EqualToken struct {
 	self []rune
 }

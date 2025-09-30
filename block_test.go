@@ -845,7 +845,7 @@ func TestAsteriskDetector(t *testing.T) {
 				input: []rune{'*', '*', '*'},
 			},
 			want: want{
-				token.NewAsterisk(true, []rune{'*', '*', '*'}),
+				token.NewHorizontal(),
 				true,
 			},
 		},
@@ -855,7 +855,7 @@ func TestAsteriskDetector(t *testing.T) {
 				input: []rune{'*', '*', 'a'},
 			},
 			want: want{
-				token.NewAsterisk(false, []rune{'*', '*', 'a'}),
+				token.NewParagraphBlock("**a", 0),
 				true,
 			},
 		},
@@ -865,7 +865,7 @@ func TestAsteriskDetector(t *testing.T) {
 				input: []rune{'*', ' ', '*', ' ', '*'},
 			},
 			want: want{
-				token.NewAsterisk(true, []rune{'*', ' ', '*', ' ', '*'}),
+				token.NewHorizontal(),
 				true,
 			},
 		},
